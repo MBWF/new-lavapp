@@ -1,1 +1,5 @@
-export type { Customer, CreateCustomerInput, UpdateCustomerInput } from "@/supabase/hooks";
+export type {
+	Customer,
+	CreateCustomerInput,
+	UpdateCustomerInput,
+} from "@/supabase/hooks";
