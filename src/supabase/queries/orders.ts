@@ -1,13 +1,13 @@
 import { supabase } from '../client';
 import type {
-  OrderRow,
-  OrderInsert,
-  OrderUpdate,
-  OrderItemRow,
-  OrderItemInsert,
-  OrderHistoryRow,
-  OrderHistoryInsert,
   CustomerRow,
+  OrderHistoryInsert,
+  OrderHistoryRow,
+  OrderInsert,
+  OrderItemInsert,
+  OrderItemRow,
+  OrderRow,
+  OrderUpdate,
   PieceRow,
 } from '../types/database';
 
@@ -92,7 +92,8 @@ export interface UpdateOrderInput {
 }
 
 const formatDate = (date: Date): string => {
-  return date.toISOString().split('T')[0]!;
+  const [dateStr] = date.toISOString().split('T');
+  return dateStr ?? '';
 };
 
 const parseOrder = async (
@@ -493,6 +494,67 @@ export const ordersQueries = {
       .order('pickup_date', { ascending: true });
 
     if (error) throw error;
+
+    const orders: Order[] = [];
+
+    for (const orderRow of ordersData) {
+      const { data: itemsData } = await supabase
+        .from('order_items')
+        .select('*, pieces(*)')
+        .eq('order_id', orderRow.id);
+
+      const { data: historyData } = await supabase
+        .from('order_history')
+        .select('*')
+        .eq('order_id', orderRow.id)
+        .order('created_at', { ascending: true });
+
+      let customer: CustomerRow | null = null;
+      if (orderRow.customer_id) {
+        const { data: customerData } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('id', orderRow.customer_id)
+          .single();
+        customer = customerData;
+      }
+
+      orders.push(
+        await parseOrder(
+          orderRow,
+          (itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
+          historyData ?? [],
+          customer,
+        ),
+      );
+    }
+
+    return orders;
+  },
+
+  getByPhone: async (phone: string): Promise<Order[]> => {
+    const cleanPhone = phone.replace(/\D/g, '');
+
+    const { data: customersData, error: customersError } = await supabase
+      .from('customers')
+      .select('id')
+      .ilike('phone', `%${cleanPhone}%`);
+
+    if (customersError) throw customersError;
+
+    if (!customersData || customersData.length === 0) {
+      return [];
+    }
+
+    const customerIds = customersData.map((c) => c.id);
+
+    const { data: ordersData, error: ordersError } = await supabase
+      .from('orders')
+      .select('*')
+      .in('customer_id', customerIds)
+      .order('created_at', { ascending: false });
+
+    if (ordersError) throw ordersError;
 
     const orders: Order[] = [];
 

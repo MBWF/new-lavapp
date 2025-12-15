@@ -1,13 +1,13 @@
 import { createRootRoute, Outlet, useLocation } from '@tanstack/react-router';
-import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { ProtectedRoute } from '@/components/auth/protected-route';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { Toaster } from '@/components/ui/toaster';
 
 export const Route = createRootRoute({
   component: RootComponent,
 });
 
-const PUBLIC_ROUTES = ['/login'];
+const PUBLIC_ROUTES = ['/login', '/tracking'];
 
 function RootComponent() {
   const location = useLocation();

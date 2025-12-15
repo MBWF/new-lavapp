@@ -1,12 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  ordersQueries,
-  type Order,
-  type OrderItem,
-  type OrderHistory,
-  type OrderStatus,
-  type DeliveryType,
   type CreateOrderInput,
+  type DeliveryType,
+  type Order,
+  type OrderHistory,
+  type OrderItem,
+  type OrderStatus,
+  ordersQueries,
   type UpdateOrderInput,
 } from '../queries';
 
@@ -51,6 +51,14 @@ export const useSearchOrders = (query: string) => {
     queryKey: [ORDERS_KEY, 'search', query],
     queryFn: () => ordersQueries.search(query),
     enabled: query.length > 0,
+  });
+};
+
+export const useOrdersByPhone = (phone: string) => {
+  return useQuery({
+    queryKey: [ORDERS_KEY, 'phone', phone],
+    queryFn: () => ordersQueries.getByPhone(phone),
+    enabled: phone.length >= 8,
   });
 };
 
