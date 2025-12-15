@@ -1,33 +1,33 @@
-import { createRootRoute, Outlet, useLocation } from "@tanstack/react-router";
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { ProtectedRoute } from "@/components/auth/protected-route";
-import { Toaster } from "@/components/ui/toaster";
+import { createRootRoute, Outlet, useLocation } from '@tanstack/react-router';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
+import { ProtectedRoute } from '@/components/auth/protected-route';
+import { Toaster } from '@/components/ui/toaster';
 
 export const Route = createRootRoute({
-	component: RootComponent,
+  component: RootComponent,
 });
 
-const PUBLIC_ROUTES = ["/login"];
+const PUBLIC_ROUTES = ['/login'];
 
 function RootComponent() {
-	const location = useLocation();
-	const isPublicRoute = PUBLIC_ROUTES.includes(location.pathname);
+  const location = useLocation();
+  const isPublicRoute = PUBLIC_ROUTES.includes(location.pathname);
 
-	if (isPublicRoute) {
-		return (
-			<>
-				<Outlet />
-				<Toaster />
-			</>
-		);
-	}
+  if (isPublicRoute) {
+    return (
+      <>
+        <Outlet />
+        <Toaster />
+      </>
+    );
+  }
 
-	return (
-		<ProtectedRoute>
-			<DashboardLayout>
-				<Outlet />
-				<Toaster />
-			</DashboardLayout>
-		</ProtectedRoute>
-	);
+  return (
+    <ProtectedRoute>
+      <DashboardLayout>
+        <Outlet />
+        <Toaster />
+      </DashboardLayout>
+    </ProtectedRoute>
+  );
 }

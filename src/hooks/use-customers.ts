@@ -1,13 +1,13 @@
 export {
-	useCustomers,
-	useCustomer,
-	useSearchCustomers,
-	useCreateCustomer,
-	useUpdateCustomer,
-	useDeleteCustomer,
-} from "@/supabase/hooks";
+  useCustomers,
+  useCustomer,
+  useSearchCustomers,
+  useCreateCustomer,
+  useUpdateCustomer,
+  useDeleteCustomer,
+} from '@/supabase/hooks';
 export type {
-	Customer,
-	CreateCustomerInput,
-	UpdateCustomerInput,
-} from "@/supabase/hooks";
+  Customer,
+  CreateCustomerInput,
+  UpdateCustomerInput,
+} from '@/supabase/hooks';

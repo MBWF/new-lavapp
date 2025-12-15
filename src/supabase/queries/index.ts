@@ -1,25 +1,25 @@
-export { customersQueries } from "./customers";
+export { customersQueries } from './customers';
 export type {
-	Customer,
-	CreateCustomerInput,
-	UpdateCustomerInput,
-} from "./customers";
+  Customer,
+  CreateCustomerInput,
+  UpdateCustomerInput,
+} from './customers';
 
-export { piecesQueries } from "./pieces";
+export { piecesQueries } from './pieces';
 export type {
-	Piece,
-	UnitType,
-	CreatePieceInput,
-	UpdatePieceInput,
-} from "./pieces";
+  Piece,
+  UnitType,
+  CreatePieceInput,
+  UpdatePieceInput,
+} from './pieces';
 
-export { ordersQueries } from "./orders";
+export { ordersQueries } from './orders';
 export type {
-	Order,
-	OrderItem,
-	OrderHistory,
-	OrderStatus,
-	DeliveryType,
-	CreateOrderInput,
-	UpdateOrderInput,
-} from "./orders";
+  Order,
+  OrderItem,
+  OrderHistory,
+  OrderStatus,
+  DeliveryType,
+  CreateOrderInput,
+  UpdateOrderInput,
+} from './orders';

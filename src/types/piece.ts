@@ -1,6 +1,6 @@
 export type {
-	Piece,
-	UnitType,
-	CreatePieceInput,
-	UpdatePieceInput,
-} from "@/supabase/hooks";
+  Piece,
+  UnitType,
+  CreatePieceInput,
+  UpdatePieceInput,
+} from '@/supabase/hooks';
