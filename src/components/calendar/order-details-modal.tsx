@@ -1,33 +1,34 @@
+import { Link } from '@tanstack/react-router';
 import {
-  UserX,
-  Package,
   Calendar,
-  MapPin,
+  Clock,
   FileText,
+  Loader2,
+  MapPin,
+  Package,
   Store,
   Truck,
-  Clock,
-  Loader2,
+  UserX,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/contexts/auth-context';
 import { useUpdateOrderStatus } from '@/hooks/use-orders';
 import { toast } from '@/hooks/use-toast';
-import { formatCurrency, formatPhone, cn } from '@/lib/utils';
+import { cn, formatCurrency, formatPhone } from '@/lib/utils';
+import type { CalendarEvent } from '@/types/calendar';
 import {
-  orderStatusLabels,
-  orderStatusColors,
   deliveryTypeLabels,
   type OrderStatus,
+  orderStatusColors,
+  orderStatusLabels,
 } from '@/types/order';
-import type { CalendarEvent } from '@/types/calendar';
-import { Link } from '@tanstack/react-router';
 
 interface OrderDetailsModalProps {
   event: CalendarEvent | null;
@@ -68,6 +69,7 @@ export function OrderDetailsModal({
   onOpenChange,
 }: OrderDetailsModalProps) {
   const updateStatus = useUpdateOrderStatus();
+  const { canViewPrices } = useAuth();
 
   if (!event) return null;
 
@@ -113,7 +115,7 @@ export function OrderDetailsModal({
             </DialogTitle>
             <span
               className={cn(
-                'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                'inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs',
                 orderStatusColors[order.status],
               )}
             >
@@ -131,12 +133,12 @@ export function OrderDetailsModal({
                 </div>
                 <div>
                   <p className="font-medium">Cliente Avulso</p>
-                  <p className="text-sm text-muted-foreground">Sem cadastro</p>
+                  <p className="text-muted-foreground text-sm">Sem cadastro</p>
                 </div>
               </>
             ) : order.customer ? (
               <>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-sm font-semibold text-primary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 font-semibold text-primary text-sm">
                   {order.customer.name
                     .split(' ')
                     .map((n) => n[0])
@@ -146,7 +148,7 @@ export function OrderDetailsModal({
                 </div>
                 <div>
                   <p className="font-medium">{order.customer.name}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     {formatPhone(order.customer.phone)}
                   </p>
                 </div>
@@ -156,7 +158,7 @@ export function OrderDetailsModal({
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Coleta</p>
+              <p className="text-muted-foreground text-sm">Coleta</p>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
@@ -165,7 +167,7 @@ export function OrderDetailsModal({
               </div>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Entrega</p>
+              <p className="text-muted-foreground text-sm">Entrega</p>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
@@ -196,7 +198,7 @@ export function OrderDetailsModal({
           <Separator />
 
           <div>
-            <p className="mb-2 text-sm font-medium text-muted-foreground">
+            <p className="mb-2 font-medium text-muted-foreground text-sm">
               Itens ({order.items.length})
             </p>
             <div className="space-y-2">
@@ -208,22 +210,26 @@ export function OrderDetailsModal({
                   <div className="flex items-center gap-2">
                     <Package className="h-4 w-4 text-primary" />
                     <span className="text-sm">{item.piece.name}</span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-muted-foreground text-xs">
                       x{item.quantity}
                     </span>
                   </div>
-                  <span className="text-sm font-medium">
-                    {formatCurrency(item.subtotal)}
-                  </span>
+                  {canViewPrices && (
+                    <span className="font-medium text-sm">
+                      {formatCurrency(item.subtotal)}
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
-            <div className="mt-3 flex items-center justify-between">
-              <span className="font-semibold">Total</span>
-              <span className="text-lg font-bold text-primary">
-                {formatCurrency(order.total)}
-              </span>
-            </div>
+            {canViewPrices && (
+              <div className="mt-3 flex items-center justify-between">
+                <span className="font-semibold">Total</span>
+                <span className="font-bold text-lg text-primary">
+                  {formatCurrency(order.total)}
+                </span>
+              </div>
+            )}
           </div>
 
           {(order.notes || order.specialInstructions) && (
@@ -234,7 +240,7 @@ export function OrderDetailsModal({
                   <div className="flex items-start gap-2">
                     <FileText className="mt-0.5 h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         Observações
                       </p>
                       <p className="text-sm">{order.notes}</p>
@@ -245,7 +251,7 @@ export function OrderDetailsModal({
                   <div className="flex items-start gap-2">
                     <FileText className="mt-0.5 h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         Instruções Especiais
                       </p>
                       <p className="text-sm">{order.specialInstructions}</p>
@@ -259,7 +265,7 @@ export function OrderDetailsModal({
           <Separator />
 
           <div>
-            <p className="mb-2 text-sm font-medium text-muted-foreground">
+            <p className="mb-2 font-medium text-muted-foreground text-sm">
               Alterar Status
             </p>
             <div className="flex flex-wrap gap-2">

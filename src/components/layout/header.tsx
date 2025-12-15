@@ -1,15 +1,15 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Moon, Sun, LogOut } from 'lucide-react';
-import { useTheme } from '@/hooks/use-theme';
-import { useAuth } from '@/contexts/auth-context';
-import { Button } from '@/components/ui/button';
+import { LogOut, Moon, Sun } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useAuth } from '@/contexts/auth-context';
+import { useTheme } from '@/hooks/use-theme';
 
 interface HeaderProps {
   title: string;
@@ -37,9 +37,9 @@ export function Header({ title, description }: HeaderProps) {
   return (
     <header className="flex h-16 items-center justify-between border-b bg-background/95 px-6 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="animate-fade-in">
-        <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="font-semibold text-xl tracking-tight">{title}</h1>
         {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <p className="text-muted-foreground text-sm">{description}</p>
         )}
       </div>
 
@@ -58,7 +58,7 @@ export function Header({ title, description }: HeaderProps) {
               {theme === 'dark' ? (
                 <Sun className="h-5 w-5 transition-transform hover:rotate-45" />
               ) : (
-                <Moon className="h-5 w-5 transition-transform hover:-rotate-12" />
+                <Moon className="hover:-rotate-12 h-5 w-5 transition-transform" />
               )}
             </Button>
           </TooltipTrigger>
@@ -72,11 +72,16 @@ export function Header({ title, description }: HeaderProps) {
         <div className="flex items-center gap-3">
           <div className="hidden items-center gap-2 sm:flex">
             <Avatar className="h-9 w-9 border-2 border-primary/20">
-              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-sm font-medium">
+              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 font-medium text-sm">
                 {userInitials}
               </AvatarFallback>
             </Avatar>
-            <span className="text-sm font-medium">{user?.name}</span>
+            <div className="flex flex-col">
+              <span className="font-medium text-sm">{user?.name}</span>
+              <span className="text-muted-foreground text-xs">
+                {user?.role === 'admin' ? 'Administrador' : 'Funcionário'}
+              </span>
+            </div>
           </div>
 
           <Tooltip>

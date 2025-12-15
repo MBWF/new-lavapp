@@ -1,27 +1,30 @@
-import { useState } from 'react';
 import { Link, useLocation } from '@tanstack/react-router';
 import {
-  Home,
-  Users,
-  Package,
-  ClipboardList,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
+  ClipboardList,
   Droplets,
+  Home,
+  Package,
+  Users,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { useAuth } from '@/contexts/auth-context';
+import { cn } from '@/lib/utils';
+import type { UserRole } from '@/types/auth';
 
 interface NavItem {
   title: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  allowedRoles: UserRole[];
 }
 
 const navItems: NavItem[] = [
@@ -29,32 +32,43 @@ const navItems: NavItem[] = [
     title: 'Dashboard',
     href: '/',
     icon: Home,
+    allowedRoles: ['admin'],
   },
   {
     title: 'Pedidos',
     href: '/orders',
     icon: ClipboardList,
+    allowedRoles: ['admin'],
   },
   {
     title: 'Mapa',
     href: '/map',
     icon: CalendarDays,
+    allowedRoles: ['admin', 'employee'],
   },
   {
     title: 'Clientes',
     href: '/customers',
     icon: Users,
+    allowedRoles: ['admin'],
   },
   {
     title: 'Peças',
     href: '/pieces',
     icon: Package,
+    allowedRoles: ['admin'],
   },
 ];
 
 export function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
+
+  const userRole: UserRole = user?.role ?? 'employee';
+  const filteredNavItems = navItems.filter((item) =>
+    item.allowedRoles.includes(userRole),
+  );
 
   return (
     <aside
@@ -70,18 +84,18 @@ export function Sidebar() {
           </div>
           {!isCollapsed && (
             <div className="animate-fade-in">
-              <h1 className="text-lg font-bold tracking-tight">LavApp</h1>
-              <p className="text-xs text-muted-foreground">Gerenciamento</p>
+              <h1 className="font-bold text-lg tracking-tight">LavApp</h1>
+              <p className="text-muted-foreground text-xs">Gerenciamento</p>
             </div>
           )}
         </Link>
       </div>
 
       <nav className="flex-1 space-y-1 p-3">
-        {navItems.map((item, index) => {
+        {filteredNavItems.map((item, index) => {
           const isActive =
             location.pathname === item.href ||
-            location.pathname.startsWith(item.href + '/');
+            location.pathname.startsWith(`${item.href}/`);
           const Icon = item.icon;
 
           const linkContent = (
@@ -89,7 +103,7 @@ export function Sidebar() {
               key={item.href}
               to={item.href}
               className={cn(
-                'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200',
+                'group flex items-center gap-3 rounded-lg px-3 py-2.5 font-medium text-sm transition-all duration-200',
                 isActive
                   ? 'bg-sidebar-accent text-sidebar-accent-foreground shadow-sm'
                   : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground',

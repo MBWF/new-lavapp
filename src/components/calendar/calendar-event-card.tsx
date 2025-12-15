@@ -1,8 +1,9 @@
-import { Package, Truck, Clock, User } from 'lucide-react';
-import { formatCurrency, cn } from '@/lib/utils';
-import { orderStatusLabels, orderStatusColors } from '@/types/order';
+import { Clock, Package, Truck, User } from 'lucide-react';
+import { useAuth } from '@/contexts/auth-context';
 import { isOverdue } from '@/hooks/use-calendar';
+import { cn, formatCurrency } from '@/lib/utils';
 import type { CalendarEvent } from '@/types/calendar';
+import { orderStatusColors, orderStatusLabels } from '@/types/order';
 
 interface CalendarEventCardProps {
   event: CalendarEvent;
@@ -17,10 +18,12 @@ export function CalendarEventCard({
 }: CalendarEventCardProps) {
   const { order, type, time } = event;
   const overdue = isOverdue(order, type);
+  const { canViewPrices } = useAuth();
 
   if (compact) {
     return (
       <button
+        type="button"
         onClick={onClick}
         className={cn(
           'flex w-full items-center gap-1 rounded px-1.5 py-0.5 text-xs transition-colors',
@@ -44,6 +47,7 @@ export function CalendarEventCard({
 
   return (
     <button
+      type="button"
       onClick={onClick}
       className={cn(
         'flex w-full flex-col gap-1 rounded-lg border p-2 text-left transition-all hover:shadow-md',
@@ -60,11 +64,11 @@ export function CalendarEventCard({
           ) : (
             <Truck className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
           )}
-          <span className="text-xs font-medium text-muted-foreground">
+          <span className="font-medium text-muted-foreground text-xs">
             {type === 'pickup' ? 'Coleta' : 'Entrega'}
           </span>
         </div>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        <div className="flex items-center gap-1 text-muted-foreground text-xs">
           <Clock className="h-3 w-3" />
           {time}
         </div>
@@ -72,7 +76,7 @@ export function CalendarEventCard({
 
       <div className="flex items-center gap-1.5">
         <User className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="truncate text-sm font-medium">
+        <span className="truncate font-medium text-sm">
           {order.isAnonymous ? 'Cliente Avulso' : order.customer?.name}
         </span>
       </div>
@@ -80,19 +84,21 @@ export function CalendarEventCard({
       <div className="flex items-center justify-between gap-2">
         <span
           className={cn(
-            'inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium',
+            'inline-flex items-center rounded-full px-1.5 py-0.5 font-medium text-[10px]',
             orderStatusColors[order.status],
           )}
         >
           {orderStatusLabels[order.status]}
         </span>
-        <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-          {formatCurrency(order.total)}
-        </span>
+        {canViewPrices && (
+          <span className="font-semibold text-emerald-600 text-xs dark:text-emerald-400">
+            {formatCurrency(order.total)}
+          </span>
+        )}
       </div>
 
       {overdue && (
-        <div className="flex items-center gap-1 text-[10px] font-medium text-red-600 dark:text-red-400">
+        <div className="flex items-center gap-1 font-medium text-[10px] text-red-600 dark:text-red-400">
           <Clock className="h-3 w-3" />
           Atrasado
         </div>

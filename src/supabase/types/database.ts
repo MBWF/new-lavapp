@@ -214,6 +214,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      users: {
+        Row: {
+          created_at: string;
+          email: string;
+          id: string;
+          is_active: boolean;
+          name: string;
+          password_hash: string;
+          role: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          email: string;
+          id?: string;
+          is_active?: boolean;
+          name: string;
+          password_hash: string;
+          role?: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          email?: string;
+          id?: string;
+          is_active?: boolean;
+          name?: string;
+          password_hash?: string;
+          role?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -342,3 +375,7 @@ export type OrderItemUpdate = TablesUpdate<'order_items'>;
 export type OrderHistoryRow = Tables<'order_history'>;
 export type OrderHistoryInsert = TablesInsert<'order_history'>;
 export type OrderHistoryUpdate = TablesUpdate<'order_history'>;
+
+export type UserRow = Tables<'users'>;
+export type UserInsert = TablesInsert<'users'>;
+export type UserUpdate = TablesUpdate<'users'>;

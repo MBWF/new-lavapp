@@ -1,27 +1,24 @@
 import {
   createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
   type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
-import type { User, AuthState, LoginCredentials } from '@/types/auth';
+import { usersQueries } from '@/supabase/queries/users';
+import type { AuthState, LoginCredentials, User, UserRole } from '@/types/auth';
+import { canViewPrices } from '@/types/auth';
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
+  canViewPrices: boolean;
+  isAdmin: boolean;
+  isEmployee: boolean;
 }
 
 const AUTH_STORAGE_KEY = 'lavapp_auth';
-
-const MOCK_USER: User = {
-  id: '1',
-  name: 'Administrador',
-  email: 'admin@lavapp.com',
-};
-
-const MOCK_PASSWORD = '123456';
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
@@ -33,34 +30,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (storedAuth) {
-      try {
-        const user = JSON.parse(storedAuth) as User;
-        setState({
-          user,
-          isAuthenticated: true,
-          isLoading: false,
-        });
-      } catch {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
+    const loadStoredUser = async () => {
+      const storedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (storedAuth) {
+        try {
+          const storedUser = JSON.parse(storedAuth) as User;
+          const freshUser = await usersQueries.getById(storedUser.id);
+
+          if (freshUser) {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(freshUser));
+            setState({
+              user: freshUser,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+          } else {
+            localStorage.removeItem(AUTH_STORAGE_KEY);
+            setState({ user: null, isAuthenticated: false, isLoading: false });
+          }
+        } catch {
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+          setState({ user: null, isAuthenticated: false, isLoading: false });
+        }
+      } else {
         setState((prev) => ({ ...prev, isLoading: false }));
       }
-    } else {
-      setState((prev) => ({ ...prev, isLoading: false }));
-    }
+    };
+
+    loadStoredUser();
   }, []);
 
   const login = useCallback(async (credentials: LoginCredentials) => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    const user = await usersQueries.login(
+      credentials.email,
+      credentials.password,
+    );
 
-    if (
-      credentials.email === MOCK_USER.email &&
-      credentials.password === MOCK_PASSWORD
-    ) {
-      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(MOCK_USER));
+    if (user) {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
       setState({
-        user: MOCK_USER,
+        user,
         isAuthenticated: true,
         isLoading: false,
       });
@@ -78,8 +87,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const userRole: UserRole = state.user?.role ?? 'employee';
+
   return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        ...state,
+        login,
+        logout,
+        canViewPrices: canViewPrices(userRole),
+        isAdmin: userRole === 'admin',
+        isEmployee: userRole === 'employee',
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
