@@ -9,6 +9,13 @@
 		"preview": "vite preview",
 		"format": "biome format --write ."
 	},
+	"engines": {
+		"node": ">=18.0.0",
+		"bun": ">=1.0.0",
+		"npm": "please-use-bun",
+		"pnpm": "please-use-bun",
+		"yarn": "please-use-bun"
+	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.2.2",
 		"@radix-ui/react-avatar": "^1.1.2",

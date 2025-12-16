@@ -1,8 +1,15 @@
 # Dependencies
 node_modules/
 
-# Bun
+# Bun (only package manager allowed)
 bun.lockb
+
+# Block other package managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+.pnpm-store/
+.yarn/
 
 # Build output
 dist/
