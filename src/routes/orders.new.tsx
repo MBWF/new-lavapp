@@ -13,7 +13,7 @@ function NewOrderPage() {
         title="Novo Pedido"
         description="Crie um novo pedido passo a passo"
       />
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
         <OrderWizard />
       </div>
     </div>

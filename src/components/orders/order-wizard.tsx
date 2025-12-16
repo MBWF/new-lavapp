@@ -1,14 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
-import { ChevronLeft, ChevronRight, Check, Loader2 } from 'lucide-react';
-import { OrderWizardProvider, useOrderWizard } from './order-wizard-context';
-import { StepCustomer } from './steps/step-customer';
-import { StepPieces } from './steps/step-pieces';
-import { StepDelivery } from './steps/step-delivery';
-import { StepConfirmation } from './steps/step-confirmation';
+import { Check, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCreateOrder } from '@/hooks/use-orders';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { OrderWizardProvider, useOrderWizard } from './order-wizard-context';
+import { StepConfirmation } from './steps/step-confirmation';
+import { StepCustomer } from './steps/step-customer';
+import { StepDelivery } from './steps/step-delivery';
+import { StepPieces } from './steps/step-pieces';
 
 const steps = [
   { id: 1, title: 'Cliente', description: 'Selecione o cliente' },
@@ -75,7 +75,7 @@ function WizardContent() {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <div className="border-b bg-background/95 px-6 py-4 backdrop-blur">
         <nav className="mx-auto max-w-4xl">
           <ol className="flex items-center justify-between">
@@ -98,7 +98,7 @@ function WizardContent() {
                 >
                   <span
                     className={cn(
-                      'flex h-7 w-7 items-center justify-center rounded-full text-xs font-medium',
+                      'flex h-7 w-7 items-center justify-center rounded-full font-medium text-xs',
                       step.id === currentStep &&
                         'bg-primary text-primary-foreground',
                       step.id < currentStep && 'bg-primary/20 text-primary',
@@ -122,7 +122,7 @@ function WizardContent() {
         </nav>
       </div>
 
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 p-6">
         <div className="mx-auto max-w-5xl">
           {currentStep === 1 && <StepCustomer />}
           {currentStep === 2 && <StepPieces />}

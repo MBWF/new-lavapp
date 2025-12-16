@@ -95,10 +95,10 @@ function DashboardPage() {
   const recentCustomers = customers.slice(0, 5);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <Header title="Dashboard" description="Visão geral do seu negócio" />
 
-      <div className="flex-1 space-y-6 p-6">
+      <div className="flex-1 overflow-y-auto space-y-6 p-6">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Total de Clientes"

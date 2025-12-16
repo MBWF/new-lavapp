@@ -25,7 +25,7 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const navigate = useNavigate();
   const { redirect } = useSearch({ from: '/login' });
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, user } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
@@ -42,15 +42,17 @@ function LoginPage() {
   });
 
   if (isAuthenticated) {
-    navigate({ to: redirect || '/' });
+    const defaultRoute = user?.role === 'employee' ? '/map' : '/';
+    navigate({ to: redirect || defaultRoute });
     return null;
   }
 
   const onSubmit = async (data: LoginFormData) => {
     try {
       setError('');
-      await login(data);
-      navigate({ to: redirect || '/' });
+      const loggedInUser = await login(data);
+      const defaultRoute = loggedInUser?.role === 'employee' ? '/map' : '/';
+      navigate({ to: redirect || defaultRoute });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao fazer login');
     }

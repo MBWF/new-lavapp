@@ -19,7 +19,7 @@ export interface LoginCredentials {
 }
 
 export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
-  '/': ['admin', 'employee'],
+  '/': ['admin'],
   '/map': ['admin', 'employee'],
   '/orders': ['admin'],
   '/orders/new': ['admin'],
@@ -28,15 +28,24 @@ export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
 };
 
 export const canAccessRoute = (role: UserRole, path: string): boolean => {
-  const normalizedPath = path.split('/').slice(0, 2).join('/') || '/';
+  // Check if the path matches any defined route
+  // We check from most specific to least specific
+  const sortedRoutes = Object.keys(ROUTE_PERMISSIONS).sort(
+    (a, b) => b.length - a.length,
+  );
 
-  for (const [route, allowedRoles] of Object.entries(ROUTE_PERMISSIONS)) {
-    if (normalizedPath.startsWith(route) || route === normalizedPath) {
-      return allowedRoles.includes(role);
+  for (const route of sortedRoutes) {
+    // Check if path matches the route (either exact match or starts with route + '/')
+    if (path === route || path.startsWith(route + '/')) {
+      const allowedRoles = ROUTE_PERMISSIONS[route];
+      if (allowedRoles) {
+        return allowedRoles.includes(role);
+      }
     }
   }
 
-  return role === 'admin';
+  // If no route matches, deny access
+  return false;
 };
 
 export const canViewPrices = (role: UserRole): boolean => {

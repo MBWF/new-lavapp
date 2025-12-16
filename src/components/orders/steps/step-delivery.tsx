@@ -1,38 +1,34 @@
-import { useOrderWizard } from '../order-wizard-context';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
 import {
-  Store,
-  Truck,
+  AlertCircle,
   Calendar,
   Clock,
-  MapPin,
   FileText,
-  AlertCircle,
+  MapPin,
+  Store,
+  Truck,
 } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { DatePicker } from '@/components/ui/date-picker';
 import { cn } from '@/lib/utils';
 import type { DeliveryType } from '@/types/order';
+import { useOrderWizard } from '../order-wizard-context';
 
 export function StepDelivery() {
   const { data, setDeliveryInfo } = useOrderWizard();
 
-  const formatDateForInput = (date: Date | null): string => {
-    if (!date) return '';
-    return date.toISOString().split('T')[0] ?? '';
-  };
-
   const handleDateChange = (
     field: 'pickupDate' | 'deliveryDate',
-    value: string,
+    date: Date | undefined,
   ) => {
-    setDeliveryInfo({ [field]: value ? new Date(value + 'T12:00:00') : null });
+    setDeliveryInfo({ [field]: date || null });
   };
 
   return (
-    <div className="space-y-6">
+    <div className="h-full space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold">Coleta e Entrega</h2>
+        <h2 className="font-bold text-2xl">Coleta e Entrega</h2>
         <p className="mt-1 text-muted-foreground">
           Configure as informações de coleta e entrega do pedido
         </p>
@@ -40,7 +36,7 @@ export function StepDelivery() {
 
       <div className="space-y-6">
         <div>
-          <Label className="text-base font-semibold">Tipo de Entrega</Label>
+          <Label className="font-semibold text-base">Tipo de Entrega</Label>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {(['PICKUP', 'DELIVERY'] as DeliveryType[]).map((type) => (
               <Card
@@ -71,7 +67,7 @@ export function StepDelivery() {
                     <p className="font-medium">
                       {type === 'PICKUP' ? 'Retirada na Loja' : 'Delivery'}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                       {type === 'PICKUP'
                         ? 'Cliente retira na loja'
                         : 'Entrega no endereço'}
@@ -86,27 +82,26 @@ export function StepDelivery() {
         <div className="grid gap-6 sm:grid-cols-2">
           <Card>
             <CardContent className="space-y-4 p-4">
-              <div className="flex items-center gap-2 text-lg font-semibold">
+              <div className="flex items-center gap-2 font-semibold text-lg">
                 <Calendar className="h-5 w-5 text-primary" />
                 Coleta
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="pickup-date">Data *</Label>
-                  <Input
+                  <DatePicker
                     id="pickup-date"
-                    type="date"
-                    value={formatDateForInput(data.pickupDate)}
-                    onChange={(e) =>
-                      handleDateChange('pickupDate', e.target.value)
-                    }
-                    min={new Date().toISOString().split('T')[0]}
+                    date={data.pickupDate}
+                    onSelect={(date) => handleDateChange('pickupDate', date)}
+                    placeholder="Selecione a data"
+                    fromDate={new Date()}
+                    className="w-full"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="pickup-time">Horário *</Label>
                   <div className="relative">
-                    <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Clock className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="pickup-time"
                       type="time"
@@ -124,30 +119,26 @@ export function StepDelivery() {
 
           <Card>
             <CardContent className="space-y-4 p-4">
-              <div className="flex items-center gap-2 text-lg font-semibold">
+              <div className="flex items-center gap-2 font-semibold text-lg">
                 <Calendar className="h-5 w-5 text-primary" />
                 Entrega
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="delivery-date">Data *</Label>
-                  <Input
+                  <DatePicker
                     id="delivery-date"
-                    type="date"
-                    value={formatDateForInput(data.deliveryDate)}
-                    onChange={(e) =>
-                      handleDateChange('deliveryDate', e.target.value)
-                    }
-                    min={
-                      formatDateForInput(data.pickupDate) ||
-                      new Date().toISOString().split('T')[0]
-                    }
+                    date={data.deliveryDate}
+                    onSelect={(date) => handleDateChange('deliveryDate', date)}
+                    placeholder="Selecione a data"
+                    fromDate={data.pickupDate || new Date()}
+                    className="w-full"
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="delivery-time">Horário *</Label>
                   <div className="relative">
-                    <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Clock className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="delivery-time"
                       type="time"
@@ -167,7 +158,7 @@ export function StepDelivery() {
         {data.deliveryType === 'DELIVERY' && (
           <Card>
             <CardContent className="space-y-4 p-4">
-              <div className="flex items-center gap-2 text-lg font-semibold">
+              <div className="flex items-center gap-2 font-semibold text-lg">
                 <MapPin className="h-5 w-5 text-primary" />
                 Endereço de Entrega
               </div>
@@ -183,7 +174,7 @@ export function StepDelivery() {
                 />
               </div>
               {data.deliveryType === 'DELIVERY' && !data.deliveryAddress && (
-                <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400">
+                <div className="flex items-center gap-2 text-amber-600 text-sm dark:text-amber-400">
                   <AlertCircle className="h-4 w-4" />
                   Endereço é obrigatório para delivery
                 </div>
@@ -194,7 +185,7 @@ export function StepDelivery() {
 
         <Card>
           <CardContent className="space-y-4 p-4">
-            <div className="flex items-center gap-2 text-lg font-semibold">
+            <div className="flex items-center gap-2 font-semibold text-lg">
               <FileText className="h-5 w-5 text-primary" />
               Observações
             </div>

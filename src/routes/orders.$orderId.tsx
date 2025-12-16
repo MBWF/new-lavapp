@@ -138,13 +138,13 @@ function OrderDetailsPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <Header
         title={`Pedido ${order.code}`}
         description={`Criado em ${formatDateTime(order.createdAt)}`}
       />
 
-      <div className="flex-1 space-y-6 p-6">
+      <div className="flex-1 overflow-y-auto space-y-6 p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Button variant="outline" asChild className="gap-2">
             <Link to="/orders">

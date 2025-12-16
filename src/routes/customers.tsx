@@ -151,13 +151,13 @@ function CustomersPage() {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex h-full flex-col">
       <Header
         title="Clientes"
         description="Gerencie os clientes da sua lavanderia"
       />
 
-      <div className="flex-1 space-y-6 p-6">
+      <div className="flex-1 overflow-y-auto space-y-6 p-6">
         <Card
           className="animate-fade-in"
           style={{ animationFillMode: 'forwards' }}

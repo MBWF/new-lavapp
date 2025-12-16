@@ -145,7 +145,7 @@ function MapPage() {
         description="Visualize todos os pedidos no calendário"
       />
 
-      <div className="flex-1 space-y-4 overflow-hidden p-6">
+      <div className="flex-1 overflow-y-auto space-y-4 p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-2">
             <Button

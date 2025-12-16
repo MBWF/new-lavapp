@@ -11,7 +11,7 @@ import type { AuthState, LoginCredentials, User, UserRole } from '@/types/auth';
 import { canViewPrices } from '@/types/auth';
 
 interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (credentials: LoginCredentials) => Promise<User>;
   logout: () => void;
   canViewPrices: boolean;
   isAdmin: boolean;
@@ -73,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: true,
         isLoading: false,
       });
+      return user;
     } else {
       throw new Error('Email ou senha inválidos');
     }

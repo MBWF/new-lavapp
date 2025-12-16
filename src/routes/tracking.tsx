@@ -376,7 +376,7 @@ function TrackingPage() {
           )}
 
           {hasSearched && !isLoading && (
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
               {hasResults ? (
                 <>
                   <p className="text-center text-sm text-white/60">

@@ -295,13 +295,15 @@ export function OrderDetailsModal({
             </div>
           </div>
 
-          <div className="flex justify-end pt-2">
-            <Button asChild variant="outline" size="sm">
-              <Link to="/orders/$orderId" params={{ orderId: order.id }}>
-                Ver Detalhes Completos
-              </Link>
-            </Button>
-          </div>
+          {canViewPrices && (
+            <div className="flex justify-end pt-2">
+              <Button asChild variant="outline" size="sm">
+                <Link to="/orders/$orderId" params={{ orderId: order.id }}>
+                  Ver Detalhes Completos
+                </Link>
+              </Button>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
