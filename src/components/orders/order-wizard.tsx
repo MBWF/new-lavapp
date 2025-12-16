@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Check, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCreateOrder } from '@/hooks/use-orders';
+import { useWhatsApp } from '@/hooks/use-whatsapp';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { OrderWizardProvider, useOrderWizard } from './order-wizard-context';
@@ -22,6 +23,7 @@ function WizardContent() {
   const { currentStep, setCurrentStep, data, canProceed, resetWizard } =
     useOrderWizard();
   const createOrder = useCreateOrder();
+  const { sendOrderNotification } = useWhatsApp();
 
   const handleNext = () => {
     if (currentStep < 4 && canProceed()) {
@@ -62,6 +64,9 @@ function WizardContent() {
         description: `Código do pedido: ${order.code}`,
         variant: 'success',
       });
+
+      // Open WhatsApp with order notification
+      sendOrderNotification({ order });
 
       resetWizard();
       navigate({ to: '/orders/$orderId', params: { orderId: order.id } });
