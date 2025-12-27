@@ -530,4 +530,62 @@ export const ordersQueries = {
 
 		return orders;
 	},
+
+	getByCustomerPhone: async (phone: string): Promise<Order[]> => {
+		// First find customer by phone
+		const cleanPhone = phone.replace(/\D/g, "");
+		const { data: customerData, error: customerError } = await supabase
+			.from("customers")
+			.select("id")
+			.like("phone", `%${cleanPhone}%`);
+
+		if (customerError) throw customerError;
+		if (!customerData || customerData.length === 0) return [];
+
+		const customerIds = customerData.map((c) => c.id);
+
+		const { data: ordersData, error: ordersError } = await supabase
+			.from("orders")
+			.select("*")
+			.in("customer_id", customerIds)
+			.order("created_at", { ascending: false });
+
+		if (ordersError) throw ordersError;
+
+		const orders: Order[] = [];
+
+		for (const orderRow of ordersData) {
+			const { data: itemsData } = await supabase
+				.from("order_items")
+				.select("*, pieces(*)")
+				.eq("order_id", orderRow.id);
+
+			const { data: historyData } = await supabase
+				.from("order_history")
+				.select("*")
+				.eq("order_id", orderRow.id)
+				.order("created_at", { ascending: true });
+
+			let customer: CustomerRow | null = null;
+			if (orderRow.customer_id) {
+				const { data: custData } = await supabase
+					.from("customers")
+					.select("*")
+					.eq("id", orderRow.customer_id)
+					.single();
+				customer = custData;
+			}
+
+			orders.push(
+				await parseOrder(
+					orderRow,
+					(itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
+					historyData ?? [],
+					customer,
+				),
+			);
+		}
+
+		return orders;
+	},
 };

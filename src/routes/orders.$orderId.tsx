@@ -40,6 +40,7 @@ import {
 	deliveryTypeLabels,
 	type OrderStatus,
 } from "@/types/order";
+import { sendOrderReadyNotification } from "@/services/whatsapp";
 
 export const Route = createFileRoute("/orders/$orderId")({
 	component: OrderDetailsPage,
@@ -76,7 +77,7 @@ function OrderDetailsPage() {
 		if (!order) return;
 
 		try {
-			await updateStatus.mutateAsync({
+			const updatedOrder = await updateStatus.mutateAsync({
 				id: order.id,
 				status: newStatus as OrderStatus,
 			});
@@ -85,6 +86,14 @@ function OrderDetailsPage() {
 				description: `Pedido alterado para ${orderStatusLabels[newStatus as OrderStatus]}`,
 				variant: "success",
 			});
+
+			// Send WhatsApp notification if status changed to READY
+			if (newStatus === "READY" && sendOrderReadyNotification(updatedOrder)) {
+				toast({
+					title: "WhatsApp",
+					description: "Abrindo WhatsApp para avisar o cliente que o pedido está pronto...",
+				});
+			}
 		} catch {
 			toast({
 				title: "Erro ao atualizar",

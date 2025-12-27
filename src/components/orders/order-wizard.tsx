@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useCreateOrder } from "@/hooks/use-orders";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { sendOrderCreatedNotification } from "@/services/whatsapp";
 
 const steps = [
 	{ id: 1, title: "Cliente", description: "Selecione o cliente" },
@@ -62,6 +63,14 @@ function WizardContent() {
 				description: `Código do pedido: ${order.code}`,
 				variant: "success",
 			});
+
+			// Send WhatsApp notification if customer has phone
+			if (sendOrderCreatedNotification(order)) {
+				toast({
+					title: "WhatsApp",
+					description: "Abrindo WhatsApp para enviar notificação ao cliente...",
+				});
+			}
 
 			resetWizard();
 			navigate({ to: "/orders/$orderId", params: { orderId: order.id } });

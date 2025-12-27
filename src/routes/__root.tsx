@@ -7,7 +7,7 @@ export const Route = createRootRoute({
 	component: RootComponent,
 });
 
-const PUBLIC_ROUTES = ["/login"];
+const PUBLIC_ROUTES = ["/login", "/consultas"];
 
 function RootComponent() {
 	const location = useLocation();

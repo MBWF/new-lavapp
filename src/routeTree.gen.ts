@@ -8,203 +8,245 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as PiecesRouteImport } from "./routes/pieces";
-import { Route as MapRouteImport } from "./routes/map";
-import { Route as LoginRouteImport } from "./routes/login";
-import { Route as CustomersRouteImport } from "./routes/customers";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as OrdersIndexRouteImport } from "./routes/orders.index";
-import { Route as OrdersNewRouteImport } from "./routes/orders.new";
-import { Route as OrdersOrderIdRouteImport } from "./routes/orders.$orderId";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as PiecesRouteImport } from './routes/pieces'
+import { Route as PerfilRouteImport } from './routes/perfil'
+import { Route as MapRouteImport } from './routes/map'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as ConsultasRouteImport } from './routes/consultas'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as OrdersIndexRouteImport } from './routes/orders.index'
+import { Route as OrdersNewRouteImport } from './routes/orders.new'
+import { Route as OrdersOrderIdRouteImport } from './routes/orders.$orderId'
 
 const PiecesRoute = PiecesRouteImport.update({
-	id: "/pieces",
-	path: "/pieces",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/pieces',
+  path: '/pieces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapRoute = MapRouteImport.update({
-	id: "/map",
-	path: "/map",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
-	id: "/login",
-	path: "/login",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CustomersRoute = CustomersRouteImport.update({
-	id: "/customers",
-	path: "/customers",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsultasRoute = ConsultasRouteImport.update({
+  id: '/consultas',
+  path: '/consultas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
-	id: "/",
-	path: "/",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersIndexRoute = OrdersIndexRouteImport.update({
-	id: "/orders/",
-	path: "/orders/",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersNewRoute = OrdersNewRouteImport.update({
-	id: "/orders/new",
-	path: "/orders/new",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/orders/new',
+  path: '/orders/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
-	id: "/orders/$orderId",
-	path: "/orders/$orderId",
-	getParentRoute: () => rootRouteImport,
-} as any);
+  id: '/orders/$orderId',
+  path: '/orders/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
-	"/": typeof IndexRoute;
-	"/customers": typeof CustomersRoute;
-	"/login": typeof LoginRoute;
-	"/map": typeof MapRoute;
-	"/pieces": typeof PiecesRoute;
-	"/orders/$orderId": typeof OrdersOrderIdRoute;
-	"/orders/new": typeof OrdersNewRoute;
-	"/orders": typeof OrdersIndexRoute;
+  '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
+  '/customers': typeof CustomersRoute
+  '/login': typeof LoginRoute
+  '/map': typeof MapRoute
+  '/perfil': typeof PerfilRoute
+  '/pieces': typeof PiecesRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
+  '/orders/new': typeof OrdersNewRoute
+  '/orders': typeof OrdersIndexRoute
 }
 export interface FileRoutesByTo {
-	"/": typeof IndexRoute;
-	"/customers": typeof CustomersRoute;
-	"/login": typeof LoginRoute;
-	"/map": typeof MapRoute;
-	"/pieces": typeof PiecesRoute;
-	"/orders/$orderId": typeof OrdersOrderIdRoute;
-	"/orders/new": typeof OrdersNewRoute;
-	"/orders": typeof OrdersIndexRoute;
+  '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
+  '/customers': typeof CustomersRoute
+  '/login': typeof LoginRoute
+  '/map': typeof MapRoute
+  '/perfil': typeof PerfilRoute
+  '/pieces': typeof PiecesRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
+  '/orders/new': typeof OrdersNewRoute
+  '/orders': typeof OrdersIndexRoute
 }
 export interface FileRoutesById {
-	__root__: typeof rootRouteImport;
-	"/": typeof IndexRoute;
-	"/customers": typeof CustomersRoute;
-	"/login": typeof LoginRoute;
-	"/map": typeof MapRoute;
-	"/pieces": typeof PiecesRoute;
-	"/orders/$orderId": typeof OrdersOrderIdRoute;
-	"/orders/new": typeof OrdersNewRoute;
-	"/orders/": typeof OrdersIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
+  '/customers': typeof CustomersRoute
+  '/login': typeof LoginRoute
+  '/map': typeof MapRoute
+  '/perfil': typeof PerfilRoute
+  '/pieces': typeof PiecesRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
+  '/orders/new': typeof OrdersNewRoute
+  '/orders/': typeof OrdersIndexRoute
 }
 export interface FileRouteTypes {
-	fileRoutesByFullPath: FileRoutesByFullPath;
-	fullPaths:
-		| "/"
-		| "/customers"
-		| "/login"
-		| "/map"
-		| "/pieces"
-		| "/orders/$orderId"
-		| "/orders/new"
-		| "/orders";
-	fileRoutesByTo: FileRoutesByTo;
-	to:
-		| "/"
-		| "/customers"
-		| "/login"
-		| "/map"
-		| "/pieces"
-		| "/orders/$orderId"
-		| "/orders/new"
-		| "/orders";
-	id:
-		| "__root__"
-		| "/"
-		| "/customers"
-		| "/login"
-		| "/map"
-		| "/pieces"
-		| "/orders/$orderId"
-		| "/orders/new"
-		| "/orders/";
-	fileRoutesById: FileRoutesById;
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/consultas'
+    | '/customers'
+    | '/login'
+    | '/map'
+    | '/perfil'
+    | '/pieces'
+    | '/orders/$orderId'
+    | '/orders/new'
+    | '/orders'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/consultas'
+    | '/customers'
+    | '/login'
+    | '/map'
+    | '/perfil'
+    | '/pieces'
+    | '/orders/$orderId'
+    | '/orders/new'
+    | '/orders'
+  id:
+    | '__root__'
+    | '/'
+    | '/consultas'
+    | '/customers'
+    | '/login'
+    | '/map'
+    | '/perfil'
+    | '/pieces'
+    | '/orders/$orderId'
+    | '/orders/new'
+    | '/orders/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-	IndexRoute: typeof IndexRoute;
-	CustomersRoute: typeof CustomersRoute;
-	LoginRoute: typeof LoginRoute;
-	MapRoute: typeof MapRoute;
-	PiecesRoute: typeof PiecesRoute;
-	OrdersOrderIdRoute: typeof OrdersOrderIdRoute;
-	OrdersNewRoute: typeof OrdersNewRoute;
-	OrdersIndexRoute: typeof OrdersIndexRoute;
+  IndexRoute: typeof IndexRoute
+  ConsultasRoute: typeof ConsultasRoute
+  CustomersRoute: typeof CustomersRoute
+  LoginRoute: typeof LoginRoute
+  MapRoute: typeof MapRoute
+  PerfilRoute: typeof PerfilRoute
+  PiecesRoute: typeof PiecesRoute
+  OrdersOrderIdRoute: typeof OrdersOrderIdRoute
+  OrdersNewRoute: typeof OrdersNewRoute
+  OrdersIndexRoute: typeof OrdersIndexRoute
 }
 
-declare module "@tanstack/react-router" {
-	interface FileRoutesByPath {
-		"/pieces": {
-			id: "/pieces";
-			path: "/pieces";
-			fullPath: "/pieces";
-			preLoaderRoute: typeof PiecesRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/map": {
-			id: "/map";
-			path: "/map";
-			fullPath: "/map";
-			preLoaderRoute: typeof MapRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/login": {
-			id: "/login";
-			path: "/login";
-			fullPath: "/login";
-			preLoaderRoute: typeof LoginRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/customers": {
-			id: "/customers";
-			path: "/customers";
-			fullPath: "/customers";
-			preLoaderRoute: typeof CustomersRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/": {
-			id: "/";
-			path: "/";
-			fullPath: "/";
-			preLoaderRoute: typeof IndexRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/orders/": {
-			id: "/orders/";
-			path: "/orders";
-			fullPath: "/orders";
-			preLoaderRoute: typeof OrdersIndexRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/orders/new": {
-			id: "/orders/new";
-			path: "/orders/new";
-			fullPath: "/orders/new";
-			preLoaderRoute: typeof OrdersNewRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-		"/orders/$orderId": {
-			id: "/orders/$orderId";
-			path: "/orders/$orderId";
-			fullPath: "/orders/$orderId";
-			preLoaderRoute: typeof OrdersOrderIdRouteImport;
-			parentRoute: typeof rootRouteImport;
-		};
-	}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/pieces': {
+      id: '/pieces'
+      path: '/pieces'
+      fullPath: '/pieces'
+      preLoaderRoute: typeof PiecesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map': {
+      id: '/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customers': {
+      id: '/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof CustomersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consultas': {
+      id: '/consultas'
+      path: '/consultas'
+      fullPath: '/consultas'
+      preLoaderRoute: typeof ConsultasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/': {
+      id: '/orders/'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof OrdersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/new': {
+      id: '/orders/new'
+      path: '/orders/new'
+      fullPath: '/orders/new'
+      preLoaderRoute: typeof OrdersNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders/$orderId': {
+      id: '/orders/$orderId'
+      path: '/orders/$orderId'
+      fullPath: '/orders/$orderId'
+      preLoaderRoute: typeof OrdersOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-	IndexRoute: IndexRoute,
-	CustomersRoute: CustomersRoute,
-	LoginRoute: LoginRoute,
-	MapRoute: MapRoute,
-	PiecesRoute: PiecesRoute,
-	OrdersOrderIdRoute: OrdersOrderIdRoute,
-	OrdersNewRoute: OrdersNewRoute,
-	OrdersIndexRoute: OrdersIndexRoute,
-};
+  IndexRoute: IndexRoute,
+  ConsultasRoute: ConsultasRoute,
+  CustomersRoute: CustomersRoute,
+  LoginRoute: LoginRoute,
+  MapRoute: MapRoute,
+  PerfilRoute: PerfilRoute,
+  PiecesRoute: PiecesRoute,
+  OrdersOrderIdRoute: OrdersOrderIdRoute,
+  OrdersNewRoute: OrdersNewRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
+}
 export const routeTree = rootRouteImport
-	._addFileChildren(rootRouteChildren)
-	._addFileTypes<FileRouteTypes>();
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
