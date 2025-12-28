@@ -214,6 +214,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      company_settings: {
+        Row: {
+          id: string;
+          name: string;
+          phone: string | null;
+          address: string | null;
+          logo_url: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name?: string;
+          phone?: string | null;
+          address?: string | null;
+          logo_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          phone?: string | null;
+          address?: string | null;
+          logo_url?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       users: {
         Row: {
           created_at: string;
@@ -379,3 +409,7 @@ export type OrderHistoryUpdate = TablesUpdate<'order_history'>;
 export type UserRow = Tables<'users'>;
 export type UserInsert = TablesInsert<'users'>;
 export type UserUpdate = TablesUpdate<'users'>;
+
+export type CompanySettingsRow = Tables<'company_settings'>;
+export type CompanySettingsInsert = TablesInsert<'company_settings'>;
+export type CompanySettingsUpdate = TablesUpdate<'company_settings'>;
