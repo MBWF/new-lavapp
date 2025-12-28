@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Calendar,
   Clock,
@@ -8,12 +8,12 @@ import {
   Plus,
   Search,
   User,
-} from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { Header } from '@/components/layout/header';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import { Header } from "@/components/layout/header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -21,38 +21,38 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { type Order, useOrders } from '@/hooks/use-orders';
-import { cn, formatCurrency } from '@/lib/utils';
+} from "@/components/ui/tooltip";
+import { type Order, useOrders } from "@/hooks/use-orders";
+import { cn, formatCurrency } from "@/lib/utils";
 import {
   deliveryTypeLabels,
   type OrderStatus,
   orderStatusColors,
   orderStatusLabels,
-} from '@/types/order';
+} from "@/types/order";
 
-export const Route = createFileRoute('/orders/')({
+export const Route = createFileRoute("/orders/")({
   component: OrdersPage,
 });
 
 const ITEMS_PER_PAGE = 10;
 
-const statusFilters: Array<{ value: OrderStatus | 'ALL'; label: string }> = [
-  { value: 'ALL', label: 'Todos' },
-  { value: 'RECEIVED', label: 'Recebido' },
-  { value: 'WASHING', label: 'Em Lavagem' },
-  { value: 'READY', label: 'Pronto' },
-  { value: 'DELIVERED', label: 'Entregue' },
+const statusFilters: Array<{ value: OrderStatus | "ALL"; label: string }> = [
+  { value: "ALL", label: "Todos" },
+  { value: "RECEIVED", label: "Recebido" },
+  { value: "WASHING", label: "Em Lavagem" },
+  { value: "READY", label: "Pronto" },
+  { value: "DELIVERED", label: "Entregue" },
 ];
 
 function OrdersPage() {
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | 'ALL'>('ALL');
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: orders = [], isLoading } = useOrders();
@@ -60,7 +60,7 @@ function OrdersPage() {
   const filteredOrders = useMemo(() => {
     let filtered = orders;
 
-    if (statusFilter !== 'ALL') {
+    if (statusFilter !== "ALL") {
       filtered = filtered.filter((o: Order) => o.status === statusFilter);
     }
 
@@ -70,7 +70,7 @@ function OrdersPage() {
         (o: Order) =>
           o.code.toLowerCase().includes(lowerSearch) ||
           o.customer?.name.toLowerCase().includes(lowerSearch) ||
-          o.customer?.phone.includes(search),
+          o.customer?.phone.includes(search)
       );
     }
 
@@ -85,10 +85,10 @@ function OrdersPage() {
   const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
 
   const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
     }).format(date);
   };
 
@@ -102,10 +102,10 @@ function OrdersPage() {
       <div className="flex-1 overflow-y-auto space-y-6 p-6">
         <Card
           className="animate-fade-in"
-          style={{ animationFillMode: 'forwards' }}
+          style={{ animationFillMode: "forwards" }}
         >
           <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-4 sm:items-center">
               <div className="relative w-full max-w-sm">
                 <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -123,7 +123,7 @@ function OrdersPage() {
                   <Button
                     key={filter.value}
                     variant={
-                      statusFilter === filter.value ? 'default' : 'outline'
+                      statusFilter === filter.value ? "default" : "outline"
                     }
                     size="sm"
                     onClick={() => {
@@ -172,10 +172,10 @@ function OrdersPage() {
                         <TableRow
                           key={order.id}
                           className={cn(
-                            'animate-fade-in opacity-0',
-                            `stagger-${Math.min(index + 1, 5)}`,
+                            "animate-fade-in opacity-0",
+                            `stagger-${Math.min(index + 1, 5)}`
                           )}
-                          style={{ animationFillMode: 'forwards' }}
+                          style={{ animationFillMode: "forwards" }}
                         >
                           <TableCell>
                             <span className="rounded-md bg-muted px-2 py-1 font-mono text-sm">
@@ -213,8 +213,8 @@ function OrdersPage() {
                           <TableCell>
                             <span
                               className={cn(
-                                'inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs',
-                                orderStatusColors[order.status],
+                                "inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs",
+                                orderStatusColors[order.status]
                               )}
                             >
                               {orderStatusLabels[order.status]}
@@ -257,11 +257,11 @@ function OrdersPage() {
                 {totalPages > 1 && (
                   <div className="mt-4 flex items-center justify-between">
                     <p className="text-muted-foreground text-sm">
-                      Mostrando {(currentPage - 1) * ITEMS_PER_PAGE + 1} a{' '}
+                      Mostrando {(currentPage - 1) * ITEMS_PER_PAGE + 1} a{" "}
                       {Math.min(
                         currentPage * ITEMS_PER_PAGE,
-                        filteredOrders.length,
-                      )}{' '}
+                        filteredOrders.length
+                      )}{" "}
                       de {filteredOrders.length} pedidos
                     </p>
                     <div className="flex items-center gap-2">
@@ -298,11 +298,11 @@ function OrdersPage() {
                   Nenhum pedido encontrado
                 </h3>
                 <p className="mt-1 text-muted-foreground text-sm">
-                  {search || statusFilter !== 'ALL'
-                    ? 'Tente ajustar os filtros'
-                    : 'Comece criando seu primeiro pedido'}
+                  {search || statusFilter !== "ALL"
+                    ? "Tente ajustar os filtros"
+                    : "Comece criando seu primeiro pedido"}
                 </p>
-                {!search && statusFilter === 'ALL' && (
+                {!search && statusFilter === "ALL" && (
                   <Button asChild className="mt-4 gap-2">
                     <Link to="/orders/new">
                       <Plus className="h-4 w-4" />

@@ -130,9 +130,7 @@ export function OrderWizardProvider({ children }: { children: ReactNode }) {
       case 3:
         return (
           data.pickupDate !== null &&
-          data.pickupTime !== '' &&
           data.deliveryDate !== null &&
-          data.deliveryTime !== '' &&
           (data.deliveryType === 'PICKUP' || data.deliveryAddress.trim() !== '')
         );
       case 4:

@@ -1,30 +1,30 @@
-import { useState } from 'react';
-import { Search, Plus, UserX, Check } from 'lucide-react';
-import { useCustomers, useCreateCustomer } from '@/hooks/use-customers';
-import { useOrderWizard } from '../order-wizard-context';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent } from '@/components/ui/card';
+import { useState } from "react";
+import { Search, Plus, UserX, Check } from "lucide-react";
+import { useCustomers, useCreateCustomer } from "@/hooks/use-customers";
+import { useOrderWizard } from "../order-wizard-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog';
-import { formatPhone, cn } from '@/lib/utils';
-import type { Customer } from '@/types/customer';
+} from "@/components/ui/dialog";
+import { formatPhone, cn } from "@/lib/utils";
+import type { Customer } from "@/types/customer";
 
 export function StepCustomer() {
   const { data, setCustomer } = useOrderWizard();
   const { data: customers = [], isLoading } = useCustomers();
   const createCustomer = useCreateCustomer();
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [isNewCustomerOpen, setIsNewCustomerOpen] = useState(false);
-  const [newCustomerName, setNewCustomerName] = useState('');
-  const [newCustomerPhone, setNewCustomerPhone] = useState('');
+  const [newCustomerName, setNewCustomerName] = useState("");
+  const [newCustomerPhone, setNewCustomerPhone] = useState("");
 
   const filteredCustomers = customers.filter((c) => {
     const lowerSearch = search.toLowerCase();
@@ -53,8 +53,8 @@ export function StepCustomer() {
 
     setCustomer(newCustomer, false);
     setIsNewCustomerOpen(false);
-    setNewCustomerName('');
-    setNewCustomerPhone('');
+    setNewCustomerName("");
+    setNewCustomerPhone("");
   };
 
   return (
@@ -121,9 +121,9 @@ export function StepCustomer() {
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-sm font-semibold text-primary">
                 {data.customer.name
-                  .split(' ')
+                  .split(" ")
                   .map((n) => n[0])
-                  .join('')
+                  .join("")
                   .slice(0, 2)
                   .toUpperCase()}
               </div>
@@ -142,7 +142,7 @@ export function StepCustomer() {
       <div className="space-y-2">
         <p className="text-sm font-medium text-muted-foreground">
           {isLoading
-            ? 'Carregando clientes...'
+            ? "Carregando clientes..."
             : `${filteredCustomers.length} cliente(s) encontrado(s)`}
         </p>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -150,17 +150,17 @@ export function StepCustomer() {
             <Card
               key={customer.id}
               className={cn(
-                'cursor-pointer transition-all hover:border-primary/50 hover:shadow-md',
-                data.customer?.id === customer.id && 'border-2 border-primary',
+                "cursor-pointer transition-all hover:border-primary/50 hover:shadow-md",
+                data.customer?.id === customer.id && "border-2 border-primary"
               )}
               onClick={() => handleSelectCustomer(customer)}
             >
               <CardContent className="flex items-center gap-3 p-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-sm font-semibold text-primary">
                   {customer.name
-                    .split(' ')
+                    .split(" ")
                     .map((n) => n[0])
-                    .join('')
+                    .join("")
                     .slice(0, 2)
                     .toUpperCase()}
                 </div>

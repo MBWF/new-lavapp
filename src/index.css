@@ -1,12 +1,6 @@
 @import "tailwindcss";
 
-/* 
-  Fix: 
-  - Remove invalid Tailwind-specific @theme syntax
-  - Move custom properties into :root for proper CSS variable scoping
-*/
-
-:root {
+@theme {
   --font-sans: "Geist", system-ui, sans-serif;
 
   --color-background: oklch(100% 0 0);

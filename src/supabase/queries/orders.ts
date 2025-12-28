@@ -91,9 +91,16 @@ export interface UpdateOrderInput {
   specialInstructions?: string;
 }
 
-const formatDate = (date: Date): string => {
-  const [dateStr] = date.toISOString().split('T');
-  return dateStr ?? '';
+const formatDateToISO = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const parseDateFromISO = (dateString: string): Date => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year!, month! - 1, day);
 };
 
 const parseOrder = async (
@@ -117,9 +124,9 @@ const parseOrder = async (
     total: orderRow.total,
     status: orderRow.status as OrderStatus,
     deliveryType: orderRow.delivery_type as DeliveryType,
-    pickupDate: new Date(orderRow.pickup_date),
+    pickupDate: parseDateFromISO(orderRow.pickup_date),
     pickupTime: orderRow.pickup_time,
-    deliveryDate: new Date(orderRow.delivery_date),
+    deliveryDate: parseDateFromISO(orderRow.delivery_date),
     deliveryTime: orderRow.delivery_time,
     deliveryAddress: orderRow.delivery_address ?? undefined,
     notes: orderRow.notes ?? undefined,
@@ -241,9 +248,9 @@ export const ordersQueries = {
       total,
       status: 'RECEIVED',
       delivery_type: input.deliveryType,
-      pickup_date: formatDate(input.pickupDate),
+      pickup_date: formatDateToISO(input.pickupDate),
       pickup_time: input.pickupTime,
-      delivery_date: formatDate(input.deliveryDate),
+      delivery_date: formatDateToISO(input.deliveryDate),
       delivery_time: input.deliveryTime,
       delivery_address: input.deliveryAddress,
       notes: input.notes,
@@ -333,11 +340,11 @@ export const ordersQueries = {
     if (input.deliveryType !== undefined)
       updateData.delivery_type = input.deliveryType;
     if (input.pickupDate !== undefined)
-      updateData.pickup_date = formatDate(input.pickupDate);
+      updateData.pickup_date = formatDateToISO(input.pickupDate);
     if (input.pickupTime !== undefined)
       updateData.pickup_time = input.pickupTime;
     if (input.deliveryDate !== undefined)
-      updateData.delivery_date = formatDate(input.deliveryDate);
+      updateData.delivery_date = formatDateToISO(input.deliveryDate);
     if (input.deliveryTime !== undefined)
       updateData.delivery_time = input.deliveryTime;
     if (input.deliveryAddress !== undefined)
@@ -486,10 +493,10 @@ export const ordersQueries = {
       .from('orders')
       .select('*')
       .or(
-        `pickup_date.gte.${formatDate(startDate)},delivery_date.gte.${formatDate(startDate)}`,
+        `pickup_date.gte.${formatDateToISO(startDate)},delivery_date.gte.${formatDateToISO(startDate)}`,
       )
       .or(
-        `pickup_date.lte.${formatDate(endDate)},delivery_date.lte.${formatDate(endDate)}`,
+        `pickup_date.lte.${formatDateToISO(endDate)},delivery_date.lte.${formatDateToISO(endDate)}`,
       )
       .order('pickup_date', { ascending: true });
 
