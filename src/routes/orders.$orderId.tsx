@@ -162,11 +162,11 @@ function OrderDetailsPage() {
                 disabled={updateStatus.isPending}
                 className="w-[160px]"
               >
-                <option value="RECEIVED">Recebido</option>
-                <option value="WASHING">Em Lavagem</option>
-                <option value="READY">Pronto</option>
-                <option value="DELIVERED">Entregue</option>
-                <option value="CANCELLED">Cancelado</option>
+                <option value="RECEIVED">{orderStatusLabels.RECEIVED}</option>
+                <option value="WASHING">{orderStatusLabels.WASHING}</option>
+                <option value="READY">{orderStatusLabels.READY}</option>
+                <option value="DELIVERED">{orderStatusLabels.DELIVERED}</option>
+                <option value="CANCELLED">{orderStatusLabels.CANCELLED}</option>
               </Select>
             </div>
 

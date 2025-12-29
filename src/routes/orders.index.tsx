@@ -44,10 +44,10 @@ const ITEMS_PER_PAGE = 10;
 
 const statusFilters: Array<{ value: OrderStatus | "ALL"; label: string }> = [
   { value: "ALL", label: "Todos" },
-  { value: "RECEIVED", label: "Recebido" },
-  { value: "WASHING", label: "Em Lavagem" },
-  { value: "READY", label: "Pronto" },
-  { value: "DELIVERED", label: "Entregue" },
+  { value: "RECEIVED", label: orderStatusLabels.RECEIVED },
+  { value: "WASHING", label: orderStatusLabels.WASHING },
+  { value: "READY", label: orderStatusLabels.READY },
+  { value: "DELIVERED", label: orderStatusLabels.DELIVERED },
 ];
 
 function OrdersPage() {

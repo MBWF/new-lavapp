@@ -43,22 +43,22 @@ const statusActions: Array<{
 }> = [
   {
     status: 'RECEIVED',
-    label: 'Recebido',
+    label: orderStatusLabels.RECEIVED,
     color: 'bg-blue-500 hover:bg-blue-600',
   },
   {
     status: 'WASHING',
-    label: 'Em Lavagem',
+    label: orderStatusLabels.WASHING,
     color: 'bg-yellow-500 hover:bg-yellow-600',
   },
   {
     status: 'READY',
-    label: 'Pronto',
+    label: orderStatusLabels.READY,
     color: 'bg-green-500 hover:bg-green-600',
   },
   {
     status: 'DELIVERED',
-    label: 'Entregue',
+    label: orderStatusLabels.DELIVERED,
     color: 'bg-purple-500 hover:bg-purple-600',
   },
 ];

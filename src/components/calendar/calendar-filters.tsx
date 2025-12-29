@@ -12,10 +12,10 @@ interface CalendarFiltersProps {
 
 const statusOptions: Array<{ value: OrderStatus | 'ALL'; label: string }> = [
   { value: 'ALL', label: 'Todos os Status' },
-  { value: 'RECEIVED', label: orderStatusLabels['RECEIVED'] ?? 'Recebido' },
-  { value: 'WASHING', label: orderStatusLabels['WASHING'] ?? 'Em Lavagem' },
-  { value: 'READY', label: orderStatusLabels['READY'] ?? 'Pronto' },
-  { value: 'DELIVERED', label: orderStatusLabels['DELIVERED'] ?? 'Entregue' },
+  { value: 'RECEIVED', label: orderStatusLabels.RECEIVED },
+  { value: 'WASHING', label: orderStatusLabels.WASHING },
+  { value: 'READY', label: orderStatusLabels.READY },
+  { value: 'DELIVERED', label: orderStatusLabels.DELIVERED },
 ];
 
 const operationOptions: Array<{ value: OperationType; label: string }> = [

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   CalendarDays,
   ChevronRight,
@@ -13,43 +13,44 @@ import {
   Shirt,
   Truck,
   User,
-} from 'lucide-react';
-import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { cn } from '@/lib/utils';
-import { type Order, useOrdersByPhone } from '@/supabase/hooks';
+} from "lucide-react";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import { type Order, useOrdersByPhone } from "@/supabase/hooks";
 import {
   deliveryTypeLabels,
+  ORDER_STATUS_STEPS,
   orderStatusColors,
   orderStatusLabels,
-} from '@/types/order';
+} from "@/types/order";
 
-export const Route = createFileRoute('/tracking')({
+export const Route = createFileRoute("/tracking")({
   component: TrackingPage,
 });
 
 const formatDate = (date: Date) => {
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
   }).format(date);
 };
 
 const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
   }).format(value);
 };
 
 const formatPhone = (value: string) => {
-  const digits = value.replace(/\D/g, '');
+  const digits = value.replace(/\D/g, "");
   if (digits.length <= 2) return digits;
   if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
   if (digits.length <= 11) {
@@ -58,16 +59,16 @@ const formatPhone = (value: string) => {
   return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
 };
 
-const statusSteps = ['RECEIVED', 'WASHING', 'READY', 'DELIVERED'];
-
 function OrderStatusTimeline({ currentStatus }: { currentStatus: string }) {
-  const currentIndex = statusSteps.indexOf(currentStatus);
+  const currentIndex = ORDER_STATUS_STEPS.indexOf(
+    currentStatus as "RECEIVED" | "WASHING" | "READY" | "DELIVERED"
+  );
 
-  if (currentStatus === 'CANCELLED') {
+  if (currentStatus === "CANCELLED") {
     return (
       <div className="flex items-center justify-center rounded-lg bg-red-500/20 p-3">
         <span className="font-medium text-red-300 text-sm">
-          Pedido Cancelado
+          {orderStatusLabels.CANCELLED}
         </span>
       </div>
     );
@@ -75,7 +76,7 @@ function OrderStatusTimeline({ currentStatus }: { currentStatus: string }) {
 
   return (
     <div className="flex items-center justify-between">
-      {statusSteps.map((status, index) => {
+      {ORDER_STATUS_STEPS.map((status, index) => {
         const isCompleted = index <= currentIndex;
         const isCurrent = index === currentIndex;
 
@@ -84,12 +85,12 @@ function OrderStatusTimeline({ currentStatus }: { currentStatus: string }) {
             <div className="flex flex-col items-center">
               <div
                 className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all',
+                  "flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all",
                   isCompleted
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-white/30 bg-transparent text-white/40',
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-white/30 bg-transparent text-white/40",
                   isCurrent &&
-                    'ring-2 ring-primary/50 ring-offset-2 ring-offset-transparent',
+                    "ring-2 ring-primary/50 ring-offset-2 ring-offset-transparent"
                 )}
               >
                 {index === 0 && <Package className="h-4 w-4" />}
@@ -99,18 +100,18 @@ function OrderStatusTimeline({ currentStatus }: { currentStatus: string }) {
               </div>
               <span
                 className={cn(
-                  'mt-1 text-center text-xs',
-                  isCompleted ? 'text-white/80' : 'text-white/40',
+                  "mt-1 text-center text-xs",
+                  isCompleted ? "text-white/80" : "text-white/40"
                 )}
               >
                 {orderStatusLabels[status]}
               </span>
             </div>
-            {index < statusSteps.length - 1 && (
+            {index < ORDER_STATUS_STEPS.length - 1 && (
               <div
                 className={cn(
-                  'mx-1 h-0.5 flex-1',
-                  index < currentIndex ? 'bg-primary' : 'bg-white/20',
+                  "mx-1 h-0.5 flex-1",
+                  index < currentIndex ? "bg-primary" : "bg-white/20"
                 )}
               />
             )}
@@ -135,7 +136,7 @@ function OrderCard({ order }: { order: Order }) {
             <div className="flex items-center gap-2">
               <Hash className="h-4 w-4 text-primary" />
               <span className="font-bold text-lg text-white">{order.code}</span>
-              <Badge className={cn('ml-2', orderStatusColors[order.status])}>
+              <Badge className={cn("ml-2", orderStatusColors[order.status])}>
                 {orderStatusLabels[order.status]}
               </Badge>
             </div>
@@ -152,8 +153,8 @@ function OrderCard({ order }: { order: Order }) {
             </span>
             <ChevronRight
               className={cn(
-                'h-5 w-5 text-white/40 transition-transform',
-                expanded && 'rotate-90',
+                "h-5 w-5 text-white/40 transition-transform",
+                expanded && "rotate-90"
               )}
             />
           </div>
@@ -256,12 +257,12 @@ function OrderCard({ order }: { order: Order }) {
                         <div>
                           <p className="text-white/80">{entry.description}</p>
                           <p className="text-white/40 text-xs">
-                            {new Intl.DateTimeFormat('pt-BR', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
+                            {new Intl.DateTimeFormat("pt-BR", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
                             }).format(entry.createdAt)}
                           </p>
                         </div>
@@ -279,8 +280,8 @@ function OrderCard({ order }: { order: Order }) {
 }
 
 function TrackingPage() {
-  const [phoneInput, setPhoneInput] = useState('');
-  const [searchPhone, setSearchPhone] = useState('');
+  const [phoneInput, setPhoneInput] = useState("");
+  const [searchPhone, setSearchPhone] = useState("");
 
   const { data: orders, isLoading, isFetched } = useOrdersByPhone(searchPhone);
 
@@ -291,7 +292,7 @@ function TrackingPage() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanPhone = phoneInput.replace(/\D/g, '');
+    const cleanPhone = phoneInput.replace(/\D/g, "");
     if (cleanPhone.length >= 8) {
       setSearchPhone(cleanPhone);
     }
@@ -301,7 +302,7 @@ function TrackingPage() {
   const hasResults = orders && orders.length > 0;
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
 
       <div className="-left-40 -top-40 absolute h-80 w-80 rounded-full bg-purple-500/30 blur-3xl" />
@@ -312,10 +313,10 @@ function TrackingPage() {
           <div className="mb-8 text-center">
             <Link
               to="/login"
-              search={{ redirect: '/tracking' }}
+              search={{ redirect: "/tracking" }}
               className="inline-block"
             >
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/70 shadow-2xl shadow-primary/25">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/70 shadow-2xl shadow-primary/25">
                 <Droplets className="h-8 w-8 text-primary-foreground" />
               </div>
             </Link>
@@ -349,9 +350,9 @@ function TrackingPage() {
                 <Button
                   type="submit"
                   disabled={
-                    isLoading || phoneInput.replace(/\D/g, '').length < 8
+                    isLoading || phoneInput.replace(/\D/g, "").length < 8
                   }
-                  className="w-full bg-gradient-to-r from-primary to-purple-600 font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-primary/30 hover:shadow-xl"
+                  className="w-full bg-linear-to-r from-primary to-purple-600 font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-primary/30 hover:shadow-xl"
                 >
                   {isLoading ? (
                     <>
@@ -376,12 +377,12 @@ function TrackingPage() {
           )}
 
           {hasSearched && !isLoading && (
-            <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            <div className="max-h-[60vh] space-y-4 overflow-y-auto">
               {hasResults ? (
                 <>
                   <p className="text-center text-sm text-white/60">
-                    {orders.length} pedido{orders.length !== 1 ? 's' : ''}{' '}
-                    encontrado{orders.length !== 1 ? 's' : ''}
+                    {orders.length} pedido{orders.length !== 1 ? "s" : ""}{" "}
+                    encontrado{orders.length !== 1 ? "s" : ""}
                   </p>
                   {orders.map((order) => (
                     <OrderCard key={order.id} order={order} />

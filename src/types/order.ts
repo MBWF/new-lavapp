@@ -30,3 +30,13 @@ export const deliveryTypeLabels: Record<string, string> = {
   PICKUP: 'Retirada na Loja',
   DELIVERY: 'Delivery',
 };
+
+export const ORDER_STATUS_OPTIONS = [
+  { value: 'RECEIVED' as const, label: orderStatusLabels.RECEIVED },
+  { value: 'WASHING' as const, label: orderStatusLabels.WASHING },
+  { value: 'READY' as const, label: orderStatusLabels.READY },
+  { value: 'DELIVERED' as const, label: orderStatusLabels.DELIVERED },
+  { value: 'CANCELLED' as const, label: orderStatusLabels.CANCELLED },
+];
+
+export const ORDER_STATUS_STEPS = ['RECEIVED', 'WASHING', 'READY', 'DELIVERED'] as const;
