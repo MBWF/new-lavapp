@@ -1,33 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Clock,
-  DollarSign,
-  Loader2,
-  ShoppingBag,
-  Users,
-  TrendingUp,
-  CheckCircle2,
-  XCircle,
-} from "lucide-react";
-import { useMemo, useState } from "react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Line,
-  LineChart,
-  Legend,
-} from "recharts";
 import { Header } from "@/components/layout/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -36,10 +8,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCustomers } from "@/hooks/use-customers";
+import {
+  useFinancialSummary,
+  useRevenueByPeriod,
+  type PeriodType,
+} from "@/hooks/use-financial-reports";
 import { useOrders } from "@/hooks/use-orders";
-import { useFinancialSummary, useRevenueByPeriod, type PeriodType } from "@/hooks/use-financial-reports";
 import { cn, formatCurrency, formatPhone } from "@/lib/utils";
 import { paymentMethodLabels } from "@/types/order";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  CheckCircle2,
+  Clock,
+  DollarSign,
+  Loader2,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+  XCircle,
+} from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 export const Route = createFileRoute("/")({
   component: DashboardPage,
@@ -103,34 +103,37 @@ function DashboardPage() {
   const { data: customers = [] } = useCustomers();
   const { data: orders = [], isLoading: isLoadingOrders } = useOrders();
   const recentCustomers = customers.slice(0, 5);
-  
-  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
-  const [financialPeriod, setFinancialPeriod] = useState<'today' | 'week' | 'month' | 'year'>('month');
-  
+
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("day");
+  const [financialPeriod, setFinancialPeriod] = useState<
+    "today" | "week" | "month" | "year"
+  >("month");
+
   const getFinancialDateRange = () => {
     const now = new Date();
     const start = new Date();
-    
+
     switch (financialPeriod) {
-      case 'today':
+      case "today":
         start.setHours(0, 0, 0, 0);
         break;
-      case 'week':
+      case "week":
         start.setDate(now.getDate() - 7);
         break;
-      case 'month':
+      case "month":
         start.setMonth(now.getMonth() - 1);
         break;
-      case 'year':
+      case "year":
         start.setFullYear(now.getFullYear() - 1);
         break;
     }
-    
+
     return { start, end: now };
   };
-  
+
   const { start: financialStart, end: financialEnd } = getFinancialDateRange();
-  const { data: financialSummary, isLoading: isLoadingFinancial } = useFinancialSummary(financialStart, financialEnd);
+  const { data: financialSummary, isLoading: isLoadingFinancial } =
+    useFinancialSummary(financialStart, financialEnd);
   const { data: revenueData } = useRevenueByPeriod(selectedPeriod);
 
   const stats = useMemo(() => {
@@ -206,60 +209,6 @@ function DashboardPage() {
     };
   }, [orders, customers]);
 
-  const chartData = useMemo(() => {
-    const last7Days = [];
-    const today = new Date();
-
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      date.setHours(0, 0, 0, 0);
-
-      const dayName = date.toLocaleDateString("pt-BR", { weekday: "short" });
-      const formattedDayName =
-        dayName.charAt(0).toUpperCase() + dayName.slice(1);
-
-      const ordersCount = orders.filter((order) => {
-        const orderDate = new Date(order.createdAt);
-        orderDate.setHours(0, 0, 0, 0);
-        return orderDate.getTime() === date.getTime();
-      }).length;
-
-      last7Days.push({
-        name: formattedDayName,
-        pedidos: ordersCount,
-      });
-    }
-
-    return last7Days;
-  }, [orders]);
-
-  const weekTrend = useMemo(() => {
-    const today = new Date();
-    const lastWeekStart = new Date(today);
-    lastWeekStart.setDate(today.getDate() - 7);
-    const previousWeekStart = new Date(today);
-    previousWeekStart.setDate(today.getDate() - 14);
-
-    const lastWeekOrders = orders.filter((order) => {
-      const orderDate = new Date(order.createdAt);
-      return orderDate >= lastWeekStart && orderDate < today;
-    }).length;
-
-    const previousWeekOrders = orders.filter((order) => {
-      const orderDate = new Date(order.createdAt);
-      return orderDate >= previousWeekStart && orderDate < lastWeekStart;
-    }).length;
-
-    if (previousWeekOrders === 0) {
-      return lastWeekOrders > 0 ? 100 : 0;
-    }
-
-    return Math.round(
-      ((lastWeekOrders - previousWeekOrders) / previousWeekOrders) * 100
-    );
-  }, [orders]);
-
   if (isLoadingOrders) {
     return (
       <div className="flex h-full flex-col">
@@ -272,10 +221,10 @@ function DashboardPage() {
   }
 
   const financialPeriodLabels = {
-    today: 'Hoje',
-    week: 'Últimos 7 dias',
-    month: 'Último mês',
-    year: 'Último ano',
+    today: "Hoje",
+    week: "Últimos 7 dias",
+    month: "Último mês",
+    year: "Último ano",
   };
 
   return (
@@ -318,13 +267,23 @@ function DashboardPage() {
           />
         </div>
 
-        <Card className="stagger-5 animate-fade-in opacity-0" style={{ animationFillMode: "forwards" }}>
+        <Card
+          className="stagger-5 animate-fade-in opacity-0"
+          style={{ animationFillMode: "forwards" }}
+        >
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="font-semibold text-base">Relatório Financeiro</CardTitle>
-              <p className="text-muted-foreground text-sm">{financialPeriodLabels[financialPeriod]}</p>
+              <CardTitle className="font-semibold text-base">
+                Relatório Financeiro
+              </CardTitle>
+              <p className="text-muted-foreground text-sm">
+                {financialPeriodLabels[financialPeriod]}
+              </p>
             </div>
-            <Select value={financialPeriod} onValueChange={(value) => setFinancialPeriod(value as any)}>
+            <Select
+              value={financialPeriod}
+              onValueChange={(value) => setFinancialPeriod(value as any)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
               </SelectTrigger>
@@ -345,20 +304,32 @@ function DashboardPage() {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-lg border p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground">Receita Total</p>
+                    <p className="text-sm text-muted-foreground">
+                      Receita Total
+                    </p>
                     <DollarSign className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <p className="mt-2 font-bold text-2xl">{formatCurrency(financialSummary.totalRevenue)}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{financialSummary.totalOrders} pedidos</p>
+                  <p className="mt-2 font-bold text-2xl">
+                    {formatCurrency(financialSummary.totalRevenue)}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {financialSummary.totalOrders} pedidos
+                  </p>
                 </div>
 
                 <div className="rounded-lg border p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground">Receita Recebida</p>
+                    <p className="text-sm text-muted-foreground">
+                      Receita Recebida
+                    </p>
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
                   </div>
-                  <p className="mt-2 font-bold text-2xl text-green-600">{formatCurrency(financialSummary.paidRevenue)}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">{Math.round(financialSummary.paymentRate)}% pago</p>
+                  <p className="mt-2 font-bold text-2xl text-green-600">
+                    {formatCurrency(financialSummary.paidRevenue)}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {Math.round(financialSummary.paymentRate)}% pago
+                  </p>
                 </div>
 
                 <div className="rounded-lg border p-4">
@@ -366,19 +337,25 @@ function DashboardPage() {
                     <p className="text-sm text-muted-foreground">A Receber</p>
                     <XCircle className="h-4 w-4 text-yellow-500" />
                   </div>
-                  <p className="mt-2 font-bold text-2xl text-yellow-600">{formatCurrency(financialSummary.unpaidRevenue)}</p>
+                  <p className="mt-2 font-bold text-2xl text-yellow-600">
+                    {formatCurrency(financialSummary.unpaidRevenue)}
+                  </p>
                   <p className="mt-1 text-xs text-muted-foreground">Pendente</p>
                 </div>
 
                 <div className="rounded-lg border p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm text-muted-foreground">Taxa de Pagamento</p>
+                    <p className="text-sm text-muted-foreground">
+                      Taxa de Pagamento
+                    </p>
                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <p className="mt-2 font-bold text-2xl">{Math.round(financialSummary.paymentRate)}%</p>
+                  <p className="mt-2 font-bold text-2xl">
+                    {Math.round(financialSummary.paymentRate)}%
+                  </p>
                   <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
-                    <div 
-                      className="h-full bg-primary transition-all" 
+                    <div
+                      className="h-full bg-primary transition-all"
                       style={{ width: `${financialSummary.paymentRate}%` }}
                     />
                   </div>
@@ -389,15 +366,30 @@ function DashboardPage() {
             <div className="mt-6 space-y-3">
               <p className="font-medium text-sm">Por forma de pagamento</p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {Object.entries(financialSummary.byPaymentMethod).map(([method, data]) => (
-                  <div key={method} className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
-                    <div>
-                      <p className="text-sm font-medium">{paymentMethodLabels[method as keyof typeof paymentMethodLabels]}</p>
-                      <p className="text-xs text-muted-foreground">{data.count} pedidos</p>
+                {Object.entries(financialSummary.byPaymentMethod).map(
+                  ([method, data]) => (
+                    <div
+                      key={method}
+                      className="flex items-center justify-between rounded-lg bg-muted/50 p-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium">
+                          {
+                            paymentMethodLabels[
+                              method as keyof typeof paymentMethodLabels
+                            ]
+                          }
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {data.count} pedidos
+                        </p>
+                      </div>
+                      <p className="font-semibold text-sm">
+                        {formatCurrency(data.total)}
+                      </p>
                     </div>
-                    <p className="font-semibold text-sm">{formatCurrency(data.total)}</p>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             </div>
           </CardContent>
@@ -413,9 +405,16 @@ function DashboardPage() {
                 <CardTitle className="font-semibold text-base">
                   Receita por Período
                 </CardTitle>
-                <p className="text-muted-foreground text-sm">Total vs Recebida</p>
+                <p className="text-muted-foreground text-sm">
+                  Total vs Recebida
+                </p>
               </div>
-              <Select value={selectedPeriod} onValueChange={(value) => setSelectedPeriod(value as PeriodType)}>
+              <Select
+                value={selectedPeriod}
+                onValueChange={(value) =>
+                  setSelectedPeriod(value as PeriodType)
+                }
+              >
                 <SelectTrigger className="w-[140px]">
                   <SelectValue />
                 </SelectTrigger>

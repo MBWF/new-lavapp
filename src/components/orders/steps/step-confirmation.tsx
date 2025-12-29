@@ -28,7 +28,6 @@ import {
   deliveryTypeLabels,
   PAYMENT_METHOD_OPTIONS,
   paymentMethodLabels,
-  type PaymentMethod,
 } from "@/types/order";
 
 export function StepConfirmation() {
@@ -262,7 +261,10 @@ export function StepConfirmation() {
             <Select
               value={data.paymentMethod || ""}
               onValueChange={(value) =>
-                setDeliveryInfo({ paymentMethod: value as PaymentMethod })
+                setDeliveryInfo({
+                  paymentMethod:
+                    value as (typeof PAYMENT_METHOD_OPTIONS)[number]["value"],
+                })
               }
             >
               <SelectTrigger id="payment-method">

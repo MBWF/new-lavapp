@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useOrders } from "./use-orders";
-import type { Order, PaymentMethod } from "@/types/order";
+import type { PAYMENT_METHOD_OPTIONS } from "@/types/order";
 
 export interface FinancialSummary {
   totalOrders: number;
@@ -8,7 +8,10 @@ export interface FinancialSummary {
   paidRevenue: number;
   unpaidRevenue: number;
   paymentRate: number;
-  byPaymentMethod: Record<PaymentMethod, { count: number; total: number }>;
+  byPaymentMethod: Record<
+    (typeof PAYMENT_METHOD_OPTIONS)[number]["value"],
+    { count: number; total: number }
+  >;
 }
 
 export interface RevenueDataPoint {
@@ -44,7 +47,7 @@ export function useFinancialSummary(startDate: Date, endDate: Date) {
         : 0;
 
     const byPaymentMethod: Record<
-      PaymentMethod,
+      (typeof PAYMENT_METHOD_OPTIONS)[number]["value"],
       { count: number; total: number }
     > = {
       CASH: { count: 0, total: 0 },
@@ -55,8 +58,8 @@ export function useFinancialSummary(startDate: Date, endDate: Date) {
 
     filteredOrders.forEach((order) => {
       if (order.paymentMethod) {
-        byPaymentMethod[order.paymentMethod].count += 1;
-        byPaymentMethod[order.paymentMethod].total += order.total;
+        byPaymentMethod[order.paymentMethod]!.count += 1;
+        byPaymentMethod[order.paymentMethod]!.total += order.total;
       }
     });
 
@@ -217,7 +220,7 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 
 export function useOrdersWithPaymentFilter(
   paymentStatus?: "paid" | "unpaid" | "all",
-  paymentMethod?: PaymentMethod
+  paymentMethod?: (typeof PAYMENT_METHOD_OPTIONS)[number]["value"]
 ) {
   const { data: allOrders = [], isLoading } = useOrders();
 

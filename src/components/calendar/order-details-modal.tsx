@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link } from "@tanstack/react-router";
 import {
   Calendar,
   Clock,
@@ -9,26 +9,26 @@ import {
   Store,
   Truck,
   UserX,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
-import { useAuth } from '@/contexts/auth-context';
-import { useUpdateOrderStatus } from '@/hooks/use-orders';
-import { toast } from '@/hooks/use-toast';
-import { cn, formatCurrency, formatPhone } from '@/lib/utils';
-import type { CalendarEvent } from '@/types/calendar';
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/contexts/auth-context";
+import { useUpdateOrderStatus } from "@/hooks/use-orders";
+import { toast } from "@/hooks/use-toast";
+import { cn, formatCurrency, formatPhone } from "@/lib/utils";
+import type { CalendarEvent } from "@/types/calendar";
 import {
   deliveryTypeLabels,
   type OrderStatus,
   orderStatusColors,
   orderStatusLabels,
-} from '@/types/order';
+} from "@/types/order";
 
 interface OrderDetailsModalProps {
   event: CalendarEvent | null;
@@ -42,24 +42,29 @@ const statusActions: Array<{
   color: string;
 }> = [
   {
-    status: 'RECEIVED',
-    label: orderStatusLabels.RECEIVED,
-    color: 'bg-blue-500 hover:bg-blue-600',
+    status: "RECEIVED",
+    label: orderStatusLabels.RECEIVED as string,
+    color: "bg-blue-500 hover:bg-blue-600",
   },
   {
-    status: 'WASHING',
-    label: orderStatusLabels.WASHING,
-    color: 'bg-yellow-500 hover:bg-yellow-600',
+    status: "WASHING",
+    label: orderStatusLabels.WASHING as string,
+    color: "bg-yellow-500 hover:bg-yellow-600",
   },
   {
-    status: 'READY',
-    label: orderStatusLabels.READY,
-    color: 'bg-green-500 hover:bg-green-600',
+    status: "READY",
+    label: orderStatusLabels.READY as string,
+    color: "bg-green-500 hover:bg-green-600",
   },
   {
-    status: 'DELIVERED',
-    label: orderStatusLabels.DELIVERED,
-    color: 'bg-purple-500 hover:bg-purple-600',
+    status: "DELIVERED",
+    label: orderStatusLabels.DELIVERED as string,
+    color: "bg-purple-500 hover:bg-purple-600",
+  },
+  {
+    status: "CANCELLED",
+    label: orderStatusLabels.CANCELLED as string,
+    color: "bg-red-500 hover:bg-red-600",
   },
 ];
 
@@ -76,10 +81,10 @@ export function OrderDetailsModal({
   const { order, type } = event;
 
   const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     }).format(new Date(date));
   };
 
@@ -87,15 +92,15 @@ export function OrderDetailsModal({
     try {
       await updateStatus.mutateAsync({ id: order.id, status: newStatus });
       toast({
-        title: 'Status atualizado',
+        title: "Status atualizado",
         description: `Pedido alterado para ${orderStatusLabels[newStatus]}`,
-        variant: 'success',
+        variant: "success",
       });
     } catch {
       toast({
-        title: 'Erro ao atualizar',
-        description: 'Não foi possível atualizar o status.',
-        variant: 'destructive',
+        title: "Erro ao atualizar",
+        description: "Não foi possível atualizar o status.",
+        variant: "destructive",
       });
     }
   };
@@ -106,17 +111,17 @@ export function OrderDetailsModal({
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
-              {type === 'pickup' ? (
+              {type === "pickup" ? (
                 <Package className="h-5 w-5 text-blue-500" />
               ) : (
                 <Truck className="h-5 w-5 text-green-500" />
               )}
-              {type === 'pickup' ? 'Coleta' : 'Entrega'} - {order.code}
+              {type === "pickup" ? "Coleta" : "Entrega"} - {order.code}
             </DialogTitle>
             <span
               className={cn(
-                'inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs',
-                orderStatusColors[order.status],
+                "inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs",
+                orderStatusColors[order.status]
               )}
             >
               {orderStatusLabels[order.status]}
@@ -140,9 +145,9 @@ export function OrderDetailsModal({
               <>
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 font-semibold text-primary text-sm">
                   {order.customer.name
-                    .split(' ')
+                    .split(" ")
                     .map((n) => n[0])
-                    .join('')
+                    .join("")
                     .slice(0, 2)
                     .toUpperCase()}
                 </div>
@@ -178,7 +183,7 @@ export function OrderDetailsModal({
           </div>
 
           <div className="flex items-center gap-2">
-            {order.deliveryType === 'PICKUP' ? (
+            {order.deliveryType === "PICKUP" ? (
               <Store className="h-4 w-4 text-muted-foreground" />
             ) : (
               <Truck className="h-4 w-4 text-muted-foreground" />
@@ -188,7 +193,7 @@ export function OrderDetailsModal({
             </span>
           </div>
 
-          {order.deliveryType === 'DELIVERY' && order.deliveryAddress && (
+          {order.deliveryType === "DELIVERY" && order.deliveryAddress && (
             <div className="flex items-start gap-2">
               <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
               <span className="text-sm">{order.deliveryAddress}</span>
@@ -278,10 +283,8 @@ export function OrderDetailsModal({
                   }
                   onClick={() => handleStatusChange(action.status)}
                   className={cn(
-                    'gap-1 text-white',
-                    order.status === action.status
-                      ? 'opacity-50'
-                      : action.color,
+                    "gap-1 text-white",
+                    order.status === action.status ? "opacity-50" : action.color
                   )}
                 >
                   {updateStatus.isPending ? (

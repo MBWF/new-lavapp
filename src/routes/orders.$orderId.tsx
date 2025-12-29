@@ -21,7 +21,14 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { ORDER_STATUS_OPTIONS } from "@/types/order";
 import {
   Dialog,
   DialogContent,
@@ -187,15 +194,19 @@ function OrderDetailsPage() {
               <span className="text-sm text-muted-foreground">Status:</span>
               <Select
                 value={order.status}
-                onChange={(e) => handleStatusChange(e.target.value)}
+                onValueChange={(value) => handleStatusChange(value)}
                 disabled={updateStatus.isPending}
-                className="w-[160px]"
               >
-                <option value="RECEIVED">{orderStatusLabels.RECEIVED}</option>
-                <option value="WASHING">{orderStatusLabels.WASHING}</option>
-                <option value="READY">{orderStatusLabels.READY}</option>
-                <option value="DELIVERED">{orderStatusLabels.DELIVERED}</option>
-                <option value="CANCELLED">{orderStatusLabels.CANCELLED}</option>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue placeholder="Selecione o status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ORDER_STATUS_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
 

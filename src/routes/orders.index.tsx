@@ -45,7 +45,6 @@ import {
   orderStatusColors,
   orderStatusLabels,
   paymentMethodLabels,
-  type PaymentMethod,
   PAYMENT_METHOD_OPTIONS,
 } from "@/types/order";
 
@@ -57,17 +56,22 @@ const ITEMS_PER_PAGE = 10;
 
 const statusFilters: Array<{ value: OrderStatus | "ALL"; label: string }> = [
   { value: "ALL", label: "Todos" },
-  { value: "RECEIVED", label: orderStatusLabels.RECEIVED },
-  { value: "WASHING", label: orderStatusLabels.WASHING },
-  { value: "READY", label: orderStatusLabels.READY },
-  { value: "DELIVERED", label: orderStatusLabels.DELIVERED },
+  { value: "RECEIVED", label: orderStatusLabels.RECEIVED as string },
+  { value: "WASHING", label: orderStatusLabels.WASHING as string },
+  { value: "READY", label: orderStatusLabels.READY as string },
+  { value: "DELIVERED", label: orderStatusLabels.DELIVERED as string },
+  { value: "CANCELLED", label: orderStatusLabels.CANCELLED as string },
 ];
 
 function OrdersPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
-  const [paymentStatusFilter, setPaymentStatusFilter] = useState<'all' | 'paid' | 'unpaid'>('all');
-  const [paymentMethodFilter, setPaymentMethodFilter] = useState<PaymentMethod | 'ALL'>('ALL');
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState<
+    "all" | "paid" | "unpaid"
+  >("all");
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<
+    (typeof PAYMENT_METHOD_OPTIONS)[number]["value"] | "ALL"
+  >("ALL");
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: orders = [], isLoading } = useOrders();
@@ -79,14 +83,16 @@ function OrdersPage() {
       filtered = filtered.filter((o: Order) => o.status === statusFilter);
     }
 
-    if (paymentStatusFilter === 'paid') {
+    if (paymentStatusFilter === "paid") {
       filtered = filtered.filter((o: Order) => o.isPaid);
-    } else if (paymentStatusFilter === 'unpaid') {
+    } else if (paymentStatusFilter === "unpaid") {
       filtered = filtered.filter((o: Order) => !o.isPaid);
     }
 
-    if (paymentMethodFilter !== 'ALL') {
-      filtered = filtered.filter((o: Order) => o.paymentMethod === paymentMethodFilter);
+    if (paymentMethodFilter !== "ALL") {
+      filtered = filtered.filter(
+        (o: Order) => o.paymentMethod === paymentMethodFilter
+      );
     }
 
     if (search) {
@@ -156,7 +162,7 @@ function OrdersPage() {
                 <Filter className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium">Filtros</span>
               </div>
-              
+
               <div className="flex flex-wrap gap-2">
                 {statusFilters.map((filter) => (
                   <Button
@@ -176,10 +182,13 @@ function OrdersPage() {
               </div>
 
               <div className="flex flex-wrap gap-3">
-                <Select value={paymentStatusFilter} onValueChange={(value: any) => {
-                  setPaymentStatusFilter(value);
-                  setCurrentPage(1);
-                }}>
+                <Select
+                  value={paymentStatusFilter}
+                  onValueChange={(value: any) => {
+                    setPaymentStatusFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
                   <SelectTrigger className="w-[180px]">
                     <CreditCard className="mr-2 h-4 w-4" />
                     <SelectValue />
@@ -191,10 +200,13 @@ function OrdersPage() {
                   </SelectContent>
                 </Select>
 
-                <Select value={paymentMethodFilter} onValueChange={(value: any) => {
-                  setPaymentMethodFilter(value);
-                  setCurrentPage(1);
-                }}>
+                <Select
+                  value={paymentMethodFilter}
+                  onValueChange={(value: any) => {
+                    setPaymentMethodFilter(value);
+                    setCurrentPage(1);
+                  }}
+                >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Forma de pagamento" />
                   </SelectTrigger>
@@ -280,13 +292,16 @@ function OrdersPage() {
                           </TableCell>
                           <TableCell>
                             <div className="flex flex-col gap-1">
-                              <Badge variant={order.isPaid ? "default" : "secondary"} className={cn(
-                                "text-xs",
-                                order.isPaid 
-                                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                  : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
-                              )}>
-                                {order.isPaid ? 'Pago' : 'Não Pago'}
+                              <Badge
+                                variant={order.isPaid ? "default" : "secondary"}
+                                className={cn(
+                                  "text-xs",
+                                  order.isPaid
+                                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                    : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                )}
+                              >
+                                {order.isPaid ? "Pago" : "Não Pago"}
                               </Badge>
                               {order.paymentMethod && (
                                 <span className="text-muted-foreground text-xs">
