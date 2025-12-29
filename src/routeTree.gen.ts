@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackingRouteImport } from './routes/tracking'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PiecesRouteImport } from './routes/pieces'
+import { Route as PerfilRouteImport } from './routes/perfil'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as ConsultasRouteImport } from './routes/consultas'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 import { Route as OrdersNewRouteImport } from './routes/orders.new'
@@ -35,6 +37,11 @@ const PiecesRoute = PiecesRouteImport.update({
   path: '/pieces',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PerfilRoute = PerfilRouteImport.update({
+  id: '/perfil',
+  path: '/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapRoute = MapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -48,6 +55,11 @@ const LoginRoute = LoginRouteImport.update({
 const CustomersRoute = CustomersRouteImport.update({
   id: '/customers',
   path: '/customers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsultasRoute = ConsultasRouteImport.update({
+  id: '/consultas',
+  path: '/consultas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -73,9 +85,11 @@ const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
   '/customers': typeof CustomersRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/perfil': typeof PerfilRoute
   '/pieces': typeof PiecesRoute
   '/profile': typeof ProfileRoute
   '/tracking': typeof TrackingRoute
@@ -85,9 +99,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
   '/customers': typeof CustomersRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/perfil': typeof PerfilRoute
   '/pieces': typeof PiecesRoute
   '/profile': typeof ProfileRoute
   '/tracking': typeof TrackingRoute
@@ -98,9 +114,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
   '/customers': typeof CustomersRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/perfil': typeof PerfilRoute
   '/pieces': typeof PiecesRoute
   '/profile': typeof ProfileRoute
   '/tracking': typeof TrackingRoute
@@ -112,9 +130,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/consultas'
     | '/customers'
     | '/login'
     | '/map'
+    | '/perfil'
     | '/pieces'
     | '/profile'
     | '/tracking'
@@ -124,9 +144,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/consultas'
     | '/customers'
     | '/login'
     | '/map'
+    | '/perfil'
     | '/pieces'
     | '/profile'
     | '/tracking'
@@ -136,9 +158,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/consultas'
     | '/customers'
     | '/login'
     | '/map'
+    | '/perfil'
     | '/pieces'
     | '/profile'
     | '/tracking'
@@ -149,9 +173,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConsultasRoute: typeof ConsultasRoute
   CustomersRoute: typeof CustomersRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
+  PerfilRoute: typeof PerfilRoute
   PiecesRoute: typeof PiecesRoute
   ProfileRoute: typeof ProfileRoute
   TrackingRoute: typeof TrackingRoute
@@ -183,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PiecesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/perfil': {
+      id: '/perfil'
+      path: '/perfil'
+      fullPath: '/perfil'
+      preLoaderRoute: typeof PerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/map': {
       id: '/map'
       path: '/map'
@@ -202,6 +235,13 @@ declare module '@tanstack/react-router' {
       path: '/customers'
       fullPath: '/customers'
       preLoaderRoute: typeof CustomersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consultas': {
+      id: '/consultas'
+      path: '/consultas'
+      fullPath: '/consultas'
+      preLoaderRoute: typeof ConsultasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -237,9 +277,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConsultasRoute: ConsultasRoute,
   CustomersRoute: CustomersRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
+  PerfilRoute: PerfilRoute,
   PiecesRoute: PiecesRoute,
   ProfileRoute: ProfileRoute,
   TrackingRoute: TrackingRoute,
