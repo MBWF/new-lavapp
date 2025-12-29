@@ -1,4 +1,4 @@
-import { supabase } from "../client";
+import { supabase } from '../client';
 import type {
   CustomerRow,
   OrderHistoryInsert,
@@ -9,17 +9,17 @@ import type {
   OrderRow,
   OrderUpdate,
   PieceRow,
-} from "../types/database";
-import { orderStatusLabels } from "@/types/order";
+} from '../types/database';
+import { orderStatusLabels } from '@/types/order';
 
 export type OrderStatus =
-  | "RECEIVED"
-  | "WASHING"
-  | "READY"
-  | "DELIVERED"
-  | "CANCELLED";
-export type DeliveryType = "PICKUP" | "DELIVERY";
-export type PaymentMethod = "CASH" | "CREDIT_CARD" | "DEBIT_CARD" | "PIX";
+  | 'RECEIVED'
+  | 'WASHING'
+  | 'READY'
+  | 'DELIVERED'
+  | 'CANCELLED';
+export type DeliveryType = 'PICKUP' | 'DELIVERY';
+export type PaymentMethod = 'CASH' | 'CREDIT_CARD' | 'DEBIT_CARD' | 'PIX';
 
 export interface OrderItem {
   id: string;
@@ -101,13 +101,13 @@ export interface UpdateOrderInput {
 
 const formatDateToISO = (date: Date): string => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
 
 const parseDateFromISO = (dateString: string): Date => {
-  const [year, month, day] = dateString.split("-").map(Number);
+  const [year, month, day] = dateString.split('-').map(Number);
   return new Date(year!, month! - 1, day);
 };
 
@@ -115,7 +115,7 @@ const parseOrder = async (
   orderRow: OrderRow,
   itemsRows: (OrderItemRow & { pieces: PieceRow })[],
   historyRows: OrderHistoryRow[],
-  customer: CustomerRow | null
+  customer: CustomerRow | null,
 ): Promise<Order> => {
   return {
     id: orderRow.id,
@@ -139,7 +139,9 @@ const parseOrder = async (
     deliveryAddress: orderRow.delivery_address ?? undefined,
     notes: orderRow.notes ?? undefined,
     specialInstructions: orderRow.special_instructions ?? undefined,
-    paymentMethod: orderRow.payment_method ? (orderRow.payment_method as PaymentMethod) : undefined,
+    paymentMethod: orderRow.payment_method
+      ? (orderRow.payment_method as PaymentMethod)
+      : undefined,
     isPaid: orderRow.is_paid,
     history: historyRows.map((h) => ({
       id: h.id,
@@ -155,9 +157,9 @@ const parseOrder = async (
 export const ordersQueries = {
   getAll: async (): Promise<Order[]> => {
     const { data: ordersData, error: ordersError } = await supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false });
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
 
     if (ordersError) throw ordersError;
 
@@ -165,22 +167,22 @@ export const ordersQueries = {
 
     for (const orderRow of ordersData) {
       const { data: itemsData } = await supabase
-        .from("order_items")
-        .select("*, pieces(*)")
-        .eq("order_id", orderRow.id);
+        .from('order_items')
+        .select('*, pieces(*)')
+        .eq('order_id', orderRow.id);
 
       const { data: historyData } = await supabase
-        .from("order_history")
-        .select("*")
-        .eq("order_id", orderRow.id)
-        .order("created_at", { ascending: true });
+        .from('order_history')
+        .select('*')
+        .eq('order_id', orderRow.id)
+        .order('created_at', { ascending: true });
 
       let customer: CustomerRow | null = null;
       if (orderRow.customer_id) {
         const { data: customerData } = await supabase
-          .from("customers")
-          .select("*")
-          .eq("id", orderRow.customer_id)
+          .from('customers')
+          .select('*')
+          .eq('id', orderRow.customer_id)
           .single();
         customer = customerData;
       }
@@ -190,8 +192,8 @@ export const ordersQueries = {
           orderRow,
           (itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
           historyData ?? [],
-          customer
-        )
+          customer,
+        ),
       );
     }
 
@@ -200,33 +202,33 @@ export const ordersQueries = {
 
   getById: async (id: string): Promise<Order | null> => {
     const { data: orderRow, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("id", id)
+      .from('orders')
+      .select('*')
+      .eq('id', id)
       .single();
 
     if (error) {
-      if (error.code === "PGRST116") return null;
+      if (error.code === 'PGRST116') return null;
       throw error;
     }
 
     const { data: itemsData } = await supabase
-      .from("order_items")
-      .select("*, pieces(*)")
-      .eq("order_id", orderRow.id);
+      .from('order_items')
+      .select('*, pieces(*)')
+      .eq('order_id', orderRow.id);
 
     const { data: historyData } = await supabase
-      .from("order_history")
-      .select("*")
-      .eq("order_id", orderRow.id)
-      .order("created_at", { ascending: true });
+      .from('order_history')
+      .select('*')
+      .eq('order_id', orderRow.id)
+      .order('created_at', { ascending: true });
 
     let customer: CustomerRow | null = null;
     if (orderRow.customer_id) {
       const { data: customerData } = await supabase
-        .from("customers")
-        .select("*")
-        .eq("id", orderRow.customer_id)
+        .from('customers')
+        .select('*')
+        .eq('id', orderRow.customer_id)
         .single();
       customer = customerData;
     }
@@ -235,20 +237,20 @@ export const ordersQueries = {
       orderRow,
       (itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
       historyData ?? [],
-      customer
+      customer,
     );
   },
 
   create: async (input: CreateOrderInput): Promise<Order> => {
     const { data: codeData, error: codeError } = await supabase.rpc(
-      "generate_order_code"
+      'generate_order_code',
     );
 
     if (codeError) throw codeError;
 
     const total = input.items.reduce(
       (sum, item) => sum + item.unitPrice * item.quantity,
-      0
+      0,
     );
 
     const orderInsert: OrderInsert = {
@@ -256,7 +258,7 @@ export const ordersQueries = {
       customer_id: input.customerId,
       is_anonymous: input.isAnonymous,
       total,
-      status: "RECEIVED",
+      status: 'RECEIVED',
       delivery_type: input.deliveryType,
       pickup_date: formatDateToISO(input.pickupDate),
       pickup_time: input.pickupTime,
@@ -270,7 +272,7 @@ export const ordersQueries = {
     };
 
     const { data: orderData, error: orderError } = await supabase
-      .from("orders")
+      .from('orders')
       .insert(orderInsert)
       .select()
       .single();
@@ -286,35 +288,35 @@ export const ordersQueries = {
     }));
 
     const { error: itemsError } = await supabase
-      .from("order_items")
+      .from('order_items')
       .insert(itemsToInsert);
 
     if (itemsError) throw itemsError;
 
     const historyInsert: OrderHistoryInsert = {
       order_id: orderData.id,
-      action: "CREATED",
-      description: "Pedido criado",
+      action: 'CREATED',
+      description: 'Pedido criado',
     };
 
-    await supabase.from("order_history").insert(historyInsert);
+    await supabase.from('order_history').insert(historyInsert);
 
     const createdOrder = await ordersQueries.getById(orderData.id);
-    if (!createdOrder) throw new Error("Failed to fetch created order");
+    if (!createdOrder) throw new Error('Failed to fetch created order');
 
     return createdOrder;
   },
 
   update: async (input: UpdateOrderInput): Promise<Order> => {
     const existingOrder = await ordersQueries.getById(input.id);
-    if (!existingOrder) throw new Error("Order not found");
+    if (!existingOrder) throw new Error('Order not found');
 
     const historyEntries: OrderHistoryInsert[] = [];
 
     if (input.status && input.status !== existingOrder.status) {
       historyEntries.push({
         order_id: input.id,
-        action: "STATUS_CHANGED",
+        action: 'STATUS_CHANGED',
         description: `Status alterado para ${orderStatusLabels[input.status]}`,
       });
     }
@@ -322,13 +324,15 @@ export const ordersQueries = {
     if (input.isPaid !== undefined && input.isPaid !== existingOrder.isPaid) {
       historyEntries.push({
         order_id: input.id,
-        action: "PAYMENT_STATUS_CHANGED",
-        description: input.isPaid ? "Pagamento recebido" : "Pagamento marcado como não recebido",
+        action: 'PAYMENT_STATUS_CHANGED',
+        description: input.isPaid
+          ? 'Pagamento recebido'
+          : 'Pagamento marcado como não recebido',
       });
     }
 
     if (input.items) {
-      await supabase.from("order_items").delete().eq("order_id", input.id);
+      await supabase.from('order_items').delete().eq('order_id', input.id);
 
       const itemsToInsert: OrderItemInsert[] = input.items.map((item) => ({
         order_id: input.id,
@@ -338,20 +342,20 @@ export const ordersQueries = {
         subtotal: item.unitPrice * item.quantity,
       }));
 
-      await supabase.from("order_items").insert(itemsToInsert);
+      await supabase.from('order_items').insert(itemsToInsert);
 
       historyEntries.push({
         order_id: input.id,
-        action: "ITEMS_UPDATED",
-        description: "Itens do pedido atualizados",
+        action: 'ITEMS_UPDATED',
+        description: 'Itens do pedido atualizados',
       });
     }
 
     if (input.deliveryType || input.deliveryAddress || input.notes) {
       historyEntries.push({
         order_id: input.id,
-        action: "DELIVERY_UPDATED",
-        description: "Informações de entrega atualizadas",
+        action: 'DELIVERY_UPDATED',
+        description: 'Informações de entrega atualizadas',
       });
     }
 
@@ -374,29 +378,28 @@ export const ordersQueries = {
       updateData.special_instructions = input.specialInstructions;
     if (input.paymentMethod !== undefined)
       updateData.payment_method = input.paymentMethod;
-    if (input.isPaid !== undefined)
-      updateData.is_paid = input.isPaid;
+    if (input.isPaid !== undefined) updateData.is_paid = input.isPaid;
 
     if (input.items) {
       updateData.total = input.items.reduce(
         (sum, item) => sum + item.unitPrice * item.quantity,
-        0
+        0,
       );
     }
 
     const { error: updateError } = await supabase
-      .from("orders")
+      .from('orders')
       .update(updateData)
-      .eq("id", input.id);
+      .eq('id', input.id);
 
     if (updateError) throw updateError;
 
     if (historyEntries.length > 0) {
-      await supabase.from("order_history").insert(historyEntries);
+      await supabase.from('order_history').insert(historyEntries);
     }
 
     const updatedOrder = await ordersQueries.getById(input.id);
-    if (!updatedOrder) throw new Error("Failed to fetch updated order");
+    if (!updatedOrder) throw new Error('Failed to fetch updated order');
 
     return updatedOrder;
   },
@@ -410,22 +413,22 @@ export const ordersQueries = {
 
     if (
       order &&
-      (order.status === "DELIVERED" || order.status === "CANCELLED")
+      (order.status === 'DELIVERED' || order.status === 'CANCELLED')
     ) {
-      throw new Error("Não é possível excluir pedidos finalizados");
+      throw new Error('Não é possível excluir pedidos finalizados');
     }
 
-    const { error } = await supabase.from("orders").delete().eq("id", id);
+    const { error } = await supabase.from('orders').delete().eq('id', id);
 
     if (error) throw error;
   },
 
   search: async (query: string): Promise<Order[]> => {
     const { data: ordersData, error } = await supabase
-      .from("orders")
-      .select("*")
+      .from('orders')
+      .select('*')
       .or(`code.ilike.%${query}%`)
-      .order("created_at", { ascending: false });
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
 
@@ -433,22 +436,22 @@ export const ordersQueries = {
 
     for (const orderRow of ordersData) {
       const { data: itemsData } = await supabase
-        .from("order_items")
-        .select("*, pieces(*)")
-        .eq("order_id", orderRow.id);
+        .from('order_items')
+        .select('*, pieces(*)')
+        .eq('order_id', orderRow.id);
 
       const { data: historyData } = await supabase
-        .from("order_history")
-        .select("*")
-        .eq("order_id", orderRow.id)
-        .order("created_at", { ascending: true });
+        .from('order_history')
+        .select('*')
+        .eq('order_id', orderRow.id)
+        .order('created_at', { ascending: true });
 
       let customer: CustomerRow | null = null;
       if (orderRow.customer_id) {
         const { data: customerData } = await supabase
-          .from("customers")
-          .select("*")
-          .eq("id", orderRow.customer_id)
+          .from('customers')
+          .select('*')
+          .eq('id', orderRow.customer_id)
           .single();
         customer = customerData;
       }
@@ -458,8 +461,8 @@ export const ordersQueries = {
           orderRow,
           (itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
           historyData ?? [],
-          customer
-        )
+          customer,
+        ),
       );
     }
 
@@ -468,10 +471,10 @@ export const ordersQueries = {
 
   getByStatus: async (status: OrderStatus): Promise<Order[]> => {
     const { data: ordersData, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("status", status)
-      .order("created_at", { ascending: false });
+      .from('orders')
+      .select('*')
+      .eq('status', status)
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
 
@@ -479,22 +482,22 @@ export const ordersQueries = {
 
     for (const orderRow of ordersData) {
       const { data: itemsData } = await supabase
-        .from("order_items")
-        .select("*, pieces(*)")
-        .eq("order_id", orderRow.id);
+        .from('order_items')
+        .select('*, pieces(*)')
+        .eq('order_id', orderRow.id);
 
       const { data: historyData } = await supabase
-        .from("order_history")
-        .select("*")
-        .eq("order_id", orderRow.id)
-        .order("created_at", { ascending: true });
+        .from('order_history')
+        .select('*')
+        .eq('order_id', orderRow.id)
+        .order('created_at', { ascending: true });
 
       let customer: CustomerRow | null = null;
       if (orderRow.customer_id) {
         const { data: customerData } = await supabase
-          .from("customers")
-          .select("*")
-          .eq("id", orderRow.customer_id)
+          .from('customers')
+          .select('*')
+          .eq('id', orderRow.customer_id)
           .single();
         customer = customerData;
       }
@@ -504,8 +507,8 @@ export const ordersQueries = {
           orderRow,
           (itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
           historyData ?? [],
-          customer
-        )
+          customer,
+        ),
       );
     }
 
@@ -514,15 +517,15 @@ export const ordersQueries = {
 
   getByDateRange: async (startDate: Date, endDate: Date): Promise<Order[]> => {
     const { data: ordersData, error } = await supabase
-      .from("orders")
-      .select("*")
+      .from('orders')
+      .select('*')
       .or(
-        `pickup_date.gte.${formatDateToISO(startDate)},delivery_date.gte.${formatDateToISO(startDate)}`
+        `pickup_date.gte.${formatDateToISO(startDate)},delivery_date.gte.${formatDateToISO(startDate)}`,
       )
       .or(
-        `pickup_date.lte.${formatDateToISO(endDate)},delivery_date.lte.${formatDateToISO(endDate)}`
+        `pickup_date.lte.${formatDateToISO(endDate)},delivery_date.lte.${formatDateToISO(endDate)}`,
       )
-      .order("pickup_date", { ascending: true });
+      .order('pickup_date', { ascending: true });
 
     if (error) throw error;
 
@@ -530,22 +533,22 @@ export const ordersQueries = {
 
     for (const orderRow of ordersData) {
       const { data: itemsData } = await supabase
-        .from("order_items")
-        .select("*, pieces(*)")
-        .eq("order_id", orderRow.id);
+        .from('order_items')
+        .select('*, pieces(*)')
+        .eq('order_id', orderRow.id);
 
       const { data: historyData } = await supabase
-        .from("order_history")
-        .select("*")
-        .eq("order_id", orderRow.id)
-        .order("created_at", { ascending: true });
+        .from('order_history')
+        .select('*')
+        .eq('order_id', orderRow.id)
+        .order('created_at', { ascending: true });
 
       let customer: CustomerRow | null = null;
       if (orderRow.customer_id) {
         const { data: customerData } = await supabase
-          .from("customers")
-          .select("*")
-          .eq("id", orderRow.customer_id)
+          .from('customers')
+          .select('*')
+          .eq('id', orderRow.customer_id)
           .single();
         customer = customerData;
       }
@@ -555,8 +558,8 @@ export const ordersQueries = {
           orderRow,
           (itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
           historyData ?? [],
-          customer
-        )
+          customer,
+        ),
       );
     }
 
@@ -564,12 +567,12 @@ export const ordersQueries = {
   },
 
   getByPhone: async (phone: string): Promise<Order[]> => {
-    const cleanPhone = phone.replace(/\D/g, "");
+    const cleanPhone = phone.replace(/\D/g, '');
 
     const { data: customersData, error: customersError } = await supabase
-      .from("customers")
-      .select("id")
-      .ilike("phone", `%${cleanPhone}%`);
+      .from('customers')
+      .select('id')
+      .ilike('phone', `%${cleanPhone}%`);
 
     if (customersError) throw customersError;
 
@@ -580,10 +583,10 @@ export const ordersQueries = {
     const customerIds = customersData.map((c) => c.id);
 
     const { data: ordersData, error: ordersError } = await supabase
-      .from("orders")
-      .select("*")
-      .in("customer_id", customerIds)
-      .order("created_at", { ascending: false });
+      .from('orders')
+      .select('*')
+      .in('customer_id', customerIds)
+      .order('created_at', { ascending: false });
 
     if (ordersError) throw ordersError;
 
@@ -591,22 +594,22 @@ export const ordersQueries = {
 
     for (const orderRow of ordersData) {
       const { data: itemsData } = await supabase
-        .from("order_items")
-        .select("*, pieces(*)")
-        .eq("order_id", orderRow.id);
+        .from('order_items')
+        .select('*, pieces(*)')
+        .eq('order_id', orderRow.id);
 
       const { data: historyData } = await supabase
-        .from("order_history")
-        .select("*")
-        .eq("order_id", orderRow.id)
-        .order("created_at", { ascending: true });
+        .from('order_history')
+        .select('*')
+        .eq('order_id', orderRow.id)
+        .order('created_at', { ascending: true });
 
       let customer: CustomerRow | null = null;
       if (orderRow.customer_id) {
         const { data: customerData } = await supabase
-          .from("customers")
-          .select("*")
-          .eq("id", orderRow.customer_id)
+          .from('customers')
+          .select('*')
+          .eq('id', orderRow.customer_id)
           .single();
         customer = customerData;
       }
@@ -616,11 +619,75 @@ export const ordersQueries = {
           orderRow,
           (itemsData as (OrderItemRow & { pieces: PieceRow })[]) ?? [],
           historyData ?? [],
-          customer
-        )
+          customer,
+        ),
       );
     }
 
     return orders;
+  },
+
+  getByCustomerId: async (
+    customerId: string,
+    page: number = 1,
+    pageSize: number = 10,
+  ): Promise<{ orders: Order[]; total: number }> => {
+    const { count, error: countError } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact', head: true })
+      .eq('customer_id', customerId);
+
+    if (countError) throw countError;
+
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data: ordersData, error } = await supabase
+      .from('orders')
+      .select(
+        `
+        *,
+        order_items(
+          *,
+          pieces(*)
+        )
+      `,
+      )
+      .eq('customer_id', customerId)
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error) throw error;
+
+    const { data: customerData } = await supabase
+      .from('customers')
+      .select('*')
+      .eq('id', customerId)
+      .single();
+
+    const orders: Order[] = [];
+
+    for (const orderRow of ordersData || []) {
+      const items = (orderRow.order_items as any[]) || [];
+      const orderItems: (OrderItemRow & { pieces: PieceRow })[] = items.map(
+        (item) => ({
+          id: item.id,
+          order_id: item.order_id,
+          piece_id: item.piece_id,
+          quantity: item.quantity,
+          unit_price: item.unit_price,
+          subtotal: item.subtotal,
+          created_at: item.created_at,
+          pieces: item.pieces,
+        }),
+      );
+
+      orders.push(await parseOrder(orderRow, orderItems, [], customerData));
+    }
+
+    return {
+      orders,
+      total: count || 0,
+    };
   },
 };

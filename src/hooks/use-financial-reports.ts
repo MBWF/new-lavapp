@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { useOrders } from "./use-orders";
-import type { PAYMENT_METHOD_OPTIONS } from "@/types/order";
+import { useMemo } from 'react';
+import { useOrders } from './use-orders';
+import type { PAYMENT_METHOD_OPTIONS } from '@/types/order';
 
 export interface FinancialSummary {
   totalOrders: number;
@@ -9,7 +9,7 @@ export interface FinancialSummary {
   unpaidRevenue: number;
   paymentRate: number;
   byPaymentMethod: Record<
-    (typeof PAYMENT_METHOD_OPTIONS)[number]["value"],
+    (typeof PAYMENT_METHOD_OPTIONS)[number]['value'],
     { count: number; total: number }
   >;
 }
@@ -32,7 +32,7 @@ export function useFinancialSummary(startDate: Date, endDate: Date) {
 
     const totalRevenue = filteredOrders.reduce(
       (sum, order) => sum + order.total,
-      0
+      0,
     );
     const paidRevenue = filteredOrders
       .filter((order) => order.isPaid)
@@ -47,7 +47,7 @@ export function useFinancialSummary(startDate: Date, endDate: Date) {
         : 0;
 
     const byPaymentMethod: Record<
-      (typeof PAYMENT_METHOD_OPTIONS)[number]["value"],
+      (typeof PAYMENT_METHOD_OPTIONS)[number]['value'],
       { count: number; total: number }
     > = {
       CASH: { count: 0, total: 0 },
@@ -76,7 +76,7 @@ export function useFinancialSummary(startDate: Date, endDate: Date) {
   return { data: summary, isLoading };
 }
 
-export type PeriodType = "day" | "week" | "month" | "year";
+export type PeriodType = 'day' | 'week' | 'month' | 'year';
 
 export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
   const { data: allOrders = [], isLoading } = useOrders();
@@ -86,7 +86,7 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
     const start = startDate || now;
     const data: RevenueDataPoint[] = [];
 
-    if (period === "day") {
+    if (period === 'day') {
       for (let i = 6; i >= 0; i--) {
         const date = new Date(start);
         date.setDate(start.getDate() - i);
@@ -102,7 +102,7 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 
         const totalRevenue = dayOrders.reduce(
           (sum, order) => sum + order.total,
-          0
+          0,
         );
         const paidRevenue = dayOrders
           .filter((order) => order.isPaid)
@@ -110,15 +110,15 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 
         data.push({
           date: date.toISOString(),
-          label: date.toLocaleDateString("pt-BR", {
-            weekday: "short",
-            day: "2-digit",
+          label: date.toLocaleDateString('pt-BR', {
+            weekday: 'short',
+            day: '2-digit',
           }),
           totalRevenue,
           paidRevenue,
         });
       }
-    } else if (period === "week") {
+    } else if (period === 'week') {
       for (let i = 11; i >= 0; i--) {
         const weekStart = new Date(start);
         weekStart.setDate(start.getDate() - i * 7);
@@ -134,7 +134,7 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 
         const totalRevenue = weekOrders.reduce(
           (sum, order) => sum + order.total,
-          0
+          0,
         );
         const paidRevenue = weekOrders
           .filter((order) => order.isPaid)
@@ -147,17 +147,17 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
           paidRevenue,
         });
       }
-    } else if (period === "month") {
+    } else if (period === 'month') {
       for (let i = 11; i >= 0; i--) {
         const monthDate = new Date(
           start.getFullYear(),
           start.getMonth() - i,
-          1
+          1,
         );
         const nextMonth = new Date(
           monthDate.getFullYear(),
           monthDate.getMonth() + 1,
-          1
+          1,
         );
 
         const monthOrders = allOrders.filter((order) => {
@@ -167,7 +167,7 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 
         const totalRevenue = monthOrders.reduce(
           (sum, order) => sum + order.total,
-          0
+          0,
         );
         const paidRevenue = monthOrders
           .filter((order) => order.isPaid)
@@ -175,15 +175,15 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 
         data.push({
           date: monthDate.toISOString(),
-          label: monthDate.toLocaleDateString("pt-BR", {
-            month: "short",
-            year: "2-digit",
+          label: monthDate.toLocaleDateString('pt-BR', {
+            month: 'short',
+            year: '2-digit',
           }),
           totalRevenue,
           paidRevenue,
         });
       }
-    } else if (period === "year") {
+    } else if (period === 'year') {
       const currentYear = start.getFullYear();
       for (let i = 4; i >= 0; i--) {
         const year = currentYear - i;
@@ -197,7 +197,7 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 
         const totalRevenue = yearOrders.reduce(
           (sum, order) => sum + order.total,
-          0
+          0,
         );
         const paidRevenue = yearOrders
           .filter((order) => order.isPaid)
@@ -219,17 +219,17 @@ export function useRevenueByPeriod(period: PeriodType, startDate?: Date) {
 }
 
 export function useOrdersWithPaymentFilter(
-  paymentStatus?: "paid" | "unpaid" | "all",
-  paymentMethod?: (typeof PAYMENT_METHOD_OPTIONS)[number]["value"]
+  paymentStatus?: 'paid' | 'unpaid' | 'all',
+  paymentMethod?: (typeof PAYMENT_METHOD_OPTIONS)[number]['value'],
 ) {
   const { data: allOrders = [], isLoading } = useOrders();
 
   const filteredOrders = useMemo(() => {
     let orders = allOrders;
 
-    if (paymentStatus === "paid") {
+    if (paymentStatus === 'paid') {
       orders = orders.filter((order) => order.isPaid);
-    } else if (paymentStatus === "unpaid") {
+    } else if (paymentStatus === 'unpaid') {
       orders = orders.filter((order) => !order.isPaid);
     }
 

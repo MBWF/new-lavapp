@@ -62,6 +62,19 @@ export const useOrdersByPhone = (phone: string) => {
   });
 };
 
+export const useOrdersByCustomerId = (
+  customerId: string,
+  page: number = 1,
+  pageSize: number = 10,
+) => {
+  return useQuery({
+    queryKey: [ORDERS_KEY, 'customer', customerId, page, pageSize],
+    queryFn: () => ordersQueries.getByCustomerId(customerId, page, pageSize),
+    enabled: !!customerId,
+    staleTime: 30000,
+  });
+};
+
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
 

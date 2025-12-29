@@ -1,5 +1,5 @@
-import { Filter, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Filter, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -7,28 +7,28 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useCustomers } from "@/hooks/use-customers";
-import { orderStatusLabels, type OrderStatus } from "@/types/order";
-import type { CalendarFilters, OperationType } from "@/types/calendar";
+} from '@/components/ui/select';
+import { useCustomers } from '@/hooks/use-customers';
+import { orderStatusLabels, type OrderStatus } from '@/types/order';
+import type { CalendarFilters, OperationType } from '@/types/calendar';
 
 interface CalendarFiltersProps {
   filters: CalendarFilters;
   onFiltersChange: (filters: CalendarFilters) => void;
 }
 
-const statusOptions: Array<{ value: OrderStatus | "ALL"; label: string }> = [
-  { value: "ALL", label: "Todos os Status" },
-  { value: "RECEIVED", label: orderStatusLabels.RECEIVED as string },
-  { value: "WASHING", label: orderStatusLabels.WASHING as string },
-  { value: "READY", label: orderStatusLabels.READY as string },
-  { value: "DELIVERED", label: orderStatusLabels.DELIVERED as string },
+const statusOptions: Array<{ value: OrderStatus | 'ALL'; label: string }> = [
+  { value: 'ALL', label: 'Todos os Status' },
+  { value: 'RECEIVED', label: orderStatusLabels.RECEIVED as string },
+  { value: 'WASHING', label: orderStatusLabels.WASHING as string },
+  { value: 'READY', label: orderStatusLabels.READY as string },
+  { value: 'DELIVERED', label: orderStatusLabels.DELIVERED as string },
 ];
 
 const operationOptions: Array<{ value: OperationType; label: string }> = [
-  { value: "all", label: "Coletas e Entregas" },
-  { value: "pickup", label: "Apenas Coletas" },
-  { value: "delivery", label: "Apenas Entregas" },
+  { value: 'all', label: 'Coletas e Entregas' },
+  { value: 'pickup', label: 'Apenas Coletas' },
+  { value: 'delivery', label: 'Apenas Entregas' },
 ];
 
 export function CalendarFiltersComponent({
@@ -38,15 +38,15 @@ export function CalendarFiltersComponent({
   const { data: customers = [] } = useCustomers();
 
   const hasActiveFilters =
-    filters.status !== "ALL" ||
-    filters.operationType !== "all" ||
-    filters.customerId !== "all";
+    filters.status !== 'ALL' ||
+    filters.operationType !== 'all' ||
+    filters.customerId !== 'all';
 
   const handleReset = () => {
     onFiltersChange({
-      status: "ALL",
-      operationType: "all",
-      customerId: "all",
+      status: 'ALL',
+      operationType: 'all',
+      customerId: 'all',
     });
   };
 

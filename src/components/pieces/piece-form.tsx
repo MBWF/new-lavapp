@@ -1,8 +1,8 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -10,18 +10,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { type PieceFormData, pieceSchema } from "@/schemas/piece-schema";
-import type { Piece, UnitType } from "@/types/piece";
+} from '@/components/ui/select';
+import { type PieceFormData, pieceSchema } from '@/schemas/piece-schema';
+import type { Piece, UnitType } from '@/types/piece';
 
 interface PieceFormProps {
   open: boolean;
@@ -50,9 +50,9 @@ export function PieceForm({
   } = useForm<PieceFormData>({
     resolver: zodResolver(pieceSchema),
     defaultValues: {
-      name: "",
+      name: '',
       price: 0,
-      unitType: "UNIDADE",
+      unitType: 'UNIDADE',
     },
   });
 
@@ -65,9 +65,9 @@ export function PieceForm({
       });
     } else {
       reset({
-        name: "",
+        name: '',
         price: 0,
-        unitType: "UNIDADE",
+        unitType: 'UNIDADE',
       });
     }
   }, [piece, reset]);
@@ -79,9 +79,9 @@ export function PieceForm({
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
       reset({
-        name: "",
+        name: '',
         price: 0,
-        unitType: "UNIDADE",
+        unitType: 'UNIDADE',
       });
     }
     onOpenChange(newOpen);
@@ -92,12 +92,12 @@ export function PieceForm({
       <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle className="text-xl">
-            {isEditing ? "Editar Peça" : "Nova Peça"}
+            {isEditing ? 'Editar Peça' : 'Nova Peça'}
           </DialogTitle>
           <DialogDescription>
             {isEditing
-              ? "Atualize as informações da peça abaixo."
-              : "Preencha as informações da nova peça."}
+              ? 'Atualize as informações da peça abaixo.'
+              : 'Preencha as informações da nova peça.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -107,7 +107,7 @@ export function PieceForm({
             <Input
               id="name"
               placeholder="Nome da peça"
-              {...register("name")}
+              {...register('name')}
               aria-invalid={!!errors.name}
             />
             {errors.name && (
@@ -123,7 +123,7 @@ export function PieceForm({
               step="0.01"
               min="0.01"
               placeholder="0,00"
-              {...register("price", { valueAsNumber: true })}
+              {...register('price', { valueAsNumber: true })}
               aria-invalid={!!errors.price}
             />
             {errors.price && (
@@ -134,9 +134,9 @@ export function PieceForm({
           <div className="space-y-2">
             <Label htmlFor="unitType">Tipo de Unidade *</Label>
             <Select
-              value={watch("unitType")}
+              value={watch('unitType')}
               onValueChange={(value) =>
-                setValue("unitType", value as UnitType, {
+                setValue('unitType', value as UnitType, {
                   shouldValidate: true,
                 })
               }
@@ -168,7 +168,7 @@ export function PieceForm({
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isEditing ? "Salvar alterações" : "Cadastrar"}
+              {isEditing ? 'Salvar alterações' : 'Cadastrar'}
             </Button>
           </DialogFooter>
         </form>

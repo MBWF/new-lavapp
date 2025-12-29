@@ -3,7 +3,10 @@ import type {
   CompanySettingsRow,
   CompanySettingsUpdate,
 } from '../types/database';
-import type { CompanySettings, UpdateCompanySettingsInput } from '@/types/company';
+import type {
+  CompanySettings,
+  UpdateCompanySettingsInput,
+} from '@/types/company';
 
 const parseCompanySettings = (row: CompanySettingsRow): CompanySettings => {
   return {
@@ -90,4 +93,3 @@ export const companySettingsQueries = {
     if (error) throw error;
   },
 };
-

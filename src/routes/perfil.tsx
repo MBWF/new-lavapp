@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   Building2,
   Phone,
@@ -8,21 +8,21 @@ import {
   Loader2,
   Save,
   Check,
-} from "lucide-react";
-import { Header } from "@/components/layout/header";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from 'lucide-react';
+import { Header } from '@/components/layout/header';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "@/hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from '@/hooks/use-toast';
 import {
   useCompanySettings,
   useUpdateCompanySettings,
-} from "@/hooks/use-company-settings";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/hooks/use-company-settings';
+import { Textarea } from '@/components/ui/textarea';
 
-export const Route = createFileRoute("/perfil")({
+export const Route = createFileRoute('/perfil')({
   component: PerfilPage,
 });
 
@@ -30,34 +30,34 @@ function PerfilPage() {
   const { data: settings, isLoading } = useCompanySettings();
   const updateSettings = useUpdateCompanySettings();
 
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [logoUrl, setLogoUrl] = useState("");
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [logoUrl, setLogoUrl] = useState('');
   const [hasChanges, setHasChanges] = useState(false);
 
   useEffect(() => {
     if (settings) {
-      setName(settings.name || "");
-      setPhone(settings.phone || "");
-      setAddress(settings.address || "");
-      setLogoUrl(settings.logoUrl || "");
+      setName(settings.name || '');
+      setPhone(settings.phone || '');
+      setAddress(settings.address || '');
+      setLogoUrl(settings.logoUrl || '');
     }
   }, [settings]);
 
   useEffect(() => {
     if (settings) {
       const changed =
-        name !== (settings.name || "") ||
-        phone !== (settings.phone || "") ||
-        address !== (settings.address || "") ||
-        logoUrl !== (settings.logoUrl || "");
+        name !== (settings.name || '') ||
+        phone !== (settings.phone || '') ||
+        address !== (settings.address || '') ||
+        logoUrl !== (settings.logoUrl || '');
       setHasChanges(changed);
     }
   }, [name, phone, address, logoUrl, settings]);
 
   const formatPhone = (value: string) => {
-    const digits = value.replace(/\D/g, "");
+    const digits = value.replace(/\D/g, '');
     if (digits.length <= 2) return digits;
     if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
     if (digits.length <= 11)
@@ -74,9 +74,9 @@ function PerfilPage() {
 
     try {
       await updateSettings.mutateAsync({
-        id: settings?.id || "",
+        id: settings?.id || '',
         input: {
-          name: name || "LavApp",
+          name: name || 'LavApp',
           phone: phone || null,
           address: address || null,
           logoUrl: logoUrl || null,
@@ -84,17 +84,17 @@ function PerfilPage() {
       });
 
       toast({
-        title: "Configurações salvas!",
-        description: "As informações da empresa foram atualizadas.",
-        variant: "success",
+        title: 'Configurações salvas!',
+        description: 'As informações da empresa foram atualizadas.',
+        variant: 'success',
       });
       setHasChanges(false);
     } catch {
       toast({
-        title: "Erro ao salvar",
+        title: 'Erro ao salvar',
         description:
-          "Não foi possível salvar as configurações. Tente novamente.",
-        variant: "destructive",
+          'Não foi possível salvar as configurações. Tente novamente.',
+        variant: 'destructive',
       });
     }
   };
@@ -145,7 +145,7 @@ function PerfilPage() {
                         alt="Logo preview"
                         className="h-full w-full object-contain"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = "none";
+                          (e.target as HTMLImageElement).style.display = 'none';
                         }}
                       />
                     </div>

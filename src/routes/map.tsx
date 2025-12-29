@@ -1,69 +1,69 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router';
 import {
   CalendarDays,
   CalendarRange,
   ChevronLeft,
   ChevronRight,
   Loader2,
-} from "lucide-react";
-import { useMemo, useState } from "react";
-import { CalendarFiltersComponent } from "@/components/calendar/calendar-filters";
-import { DayEventsModal } from "@/components/calendar/day-events-modal";
-import { MonthView } from "@/components/calendar/month-view";
-import { OrderDetailsModal } from "@/components/calendar/order-details-modal";
-import { WeekView } from "@/components/calendar/week-view";
-import { Header } from "@/components/layout/header";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { CalendarFiltersComponent } from '@/components/calendar/calendar-filters';
+import { DayEventsModal } from '@/components/calendar/day-events-modal';
+import { MonthView } from '@/components/calendar/month-view';
+import { OrderDetailsModal } from '@/components/calendar/order-details-modal';
+import { WeekView } from '@/components/calendar/week-view';
+import { Header } from '@/components/layout/header';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   getEndOfWeek,
   getMonthDateRange,
   getStartOfWeek,
   useCalendarEvents,
-} from "@/hooks/use-calendar";
+} from '@/hooks/use-calendar';
 import type {
   CalendarEvent,
   CalendarFilters,
   CalendarView,
-} from "@/types/calendar";
+} from '@/types/calendar';
 
-export const Route = createFileRoute("/map")({
+export const Route = createFileRoute('/map')({
   component: MapPage,
 });
 
 const monthNames = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro',
 ];
 
 function MapPage() {
   const today = new Date();
-  const [view, setView] = useState<CalendarView>("month");
+  const [view, setView] = useState<CalendarView>('month');
   const [currentDate, setCurrentDate] = useState(today);
   const [filters, setFilters] = useState<CalendarFilters>({
-    status: "ALL",
-    operationType: "all",
-    customerId: "all",
+    status: 'ALL',
+    operationType: 'all',
+    customerId: 'all',
   });
 
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
-    null
+    null,
   );
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const [selectedDayDate, setSelectedDayDate] = useState<Date | null>(null);
   const [selectedDayEvents, setSelectedDayEvents] = useState<CalendarEvent[]>(
-    []
+    [],
   );
   const [isDayModalOpen, setIsDayModalOpen] = useState(false);
 
@@ -71,7 +71,7 @@ function MapPage() {
   const month = currentDate.getMonth();
 
   const dateRange = useMemo(() => {
-    if (view === "month") {
+    if (view === 'month') {
       return getMonthDateRange(year, month);
     }
     const start = getStartOfWeek(currentDate);
@@ -82,11 +82,11 @@ function MapPage() {
   const { events, isLoading } = useCalendarEvents(
     dateRange.start,
     dateRange.end,
-    filters
+    filters,
   );
 
   const handlePrevious = () => {
-    if (view === "month") {
+    if (view === 'month') {
       setCurrentDate(new Date(year, month - 1, 1));
     } else {
       const newDate = new Date(currentDate);
@@ -96,7 +96,7 @@ function MapPage() {
   };
 
   const handleNext = () => {
-    if (view === "month") {
+    if (view === 'month') {
       setCurrentDate(new Date(year, month + 1, 1));
     } else {
       const newDate = new Date(currentDate);
@@ -121,7 +121,7 @@ function MapPage() {
   };
 
   const getHeaderTitle = (): string => {
-    if (view === "month") {
+    if (view === 'month') {
       return `${monthNames[month]} ${year}`;
     }
     const start = getStartOfWeek(currentDate);
@@ -135,8 +135,8 @@ function MapPage() {
     return `${start.getDate()} ${startMonth} - ${end.getDate()} ${endMonth} ${year}`;
   };
 
-  const totalPickups = events.filter((e) => e.type === "pickup").length;
-  const totalDeliveries = events.filter((e) => e.type === "delivery").length;
+  const totalPickups = events.filter((e) => e.type === 'pickup').length;
+  const totalDeliveries = events.filter((e) => e.type === 'delivery').length;
 
   return (
     <div className="flex h-full flex-col">
@@ -184,18 +184,18 @@ function MapPage() {
 
             <div className="flex rounded-lg border p-1">
               <Button
-                variant={view === "month" ? "default" : "ghost"}
+                variant={view === 'month' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setView("month")}
+                onClick={() => setView('month')}
                 className="gap-1"
               >
                 <CalendarDays className="h-4 w-4" />
                 Mês
               </Button>
               <Button
-                variant={view === "week" ? "default" : "ghost"}
+                variant={view === 'week' ? 'default' : 'ghost'}
                 size="sm"
-                onClick={() => setView("week")}
+                onClick={() => setView('week')}
                 className="gap-1"
               >
                 <CalendarRange className="h-4 w-4" />
@@ -216,7 +216,7 @@ function MapPage() {
               <div className="flex h-full items-center justify-center py-20">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </div>
-            ) : view === "month" ? (
+            ) : view === 'month' ? (
               <MonthView
                 year={year}
                 month={month}

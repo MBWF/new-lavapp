@@ -14,4 +14,3 @@ export interface UpdateCompanySettingsInput {
   address?: string | null;
   logoUrl?: string | null;
 }
-

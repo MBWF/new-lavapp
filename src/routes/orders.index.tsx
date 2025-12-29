@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from '@tanstack/react-router';
 import {
   Calendar,
   Clock,
@@ -10,20 +10,20 @@ import {
   User,
   CreditCard,
   Filter,
-} from "lucide-react";
-import { useMemo, useState } from "react";
-import { Header } from "@/components/layout/header";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Header } from '@/components/layout/header';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Table,
   TableBody,
@@ -31,14 +31,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { type Order, useOrders } from "@/hooks/use-orders";
-import { cn, formatCurrency } from "@/lib/utils";
+} from '@/components/ui/tooltip';
+import { type Order, useOrders } from '@/hooks/use-orders';
+import { cn, formatCurrency } from '@/lib/utils';
 import {
   deliveryTypeLabels,
   type OrderStatus,
@@ -46,32 +46,32 @@ import {
   orderStatusLabels,
   paymentMethodLabels,
   PAYMENT_METHOD_OPTIONS,
-} from "@/types/order";
+} from '@/types/order';
 
-export const Route = createFileRoute("/orders/")({
+export const Route = createFileRoute('/orders/')({
   component: OrdersPage,
 });
 
 const ITEMS_PER_PAGE = 10;
 
-const statusFilters: Array<{ value: OrderStatus | "ALL"; label: string }> = [
-  { value: "ALL", label: "Todos" },
-  { value: "RECEIVED", label: orderStatusLabels.RECEIVED as string },
-  { value: "WASHING", label: orderStatusLabels.WASHING as string },
-  { value: "READY", label: orderStatusLabels.READY as string },
-  { value: "DELIVERED", label: orderStatusLabels.DELIVERED as string },
-  { value: "CANCELLED", label: orderStatusLabels.CANCELLED as string },
+const statusFilters: Array<{ value: OrderStatus | 'ALL'; label: string }> = [
+  { value: 'ALL', label: 'Todos' },
+  { value: 'RECEIVED', label: orderStatusLabels.RECEIVED as string },
+  { value: 'WASHING', label: orderStatusLabels.WASHING as string },
+  { value: 'READY', label: orderStatusLabels.READY as string },
+  { value: 'DELIVERED', label: orderStatusLabels.DELIVERED as string },
+  { value: 'CANCELLED', label: orderStatusLabels.CANCELLED as string },
 ];
 
 function OrdersPage() {
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<OrderStatus | 'ALL'>('ALL');
   const [paymentStatusFilter, setPaymentStatusFilter] = useState<
-    "all" | "paid" | "unpaid"
-  >("all");
+    'all' | 'paid' | 'unpaid'
+  >('all');
   const [paymentMethodFilter, setPaymentMethodFilter] = useState<
-    (typeof PAYMENT_METHOD_OPTIONS)[number]["value"] | "ALL"
-  >("ALL");
+    (typeof PAYMENT_METHOD_OPTIONS)[number]['value'] | 'ALL'
+  >('ALL');
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: orders = [], isLoading } = useOrders();
@@ -79,19 +79,19 @@ function OrdersPage() {
   const filteredOrders = useMemo(() => {
     let filtered = orders;
 
-    if (statusFilter !== "ALL") {
+    if (statusFilter !== 'ALL') {
       filtered = filtered.filter((o: Order) => o.status === statusFilter);
     }
 
-    if (paymentStatusFilter === "paid") {
+    if (paymentStatusFilter === 'paid') {
       filtered = filtered.filter((o: Order) => o.isPaid);
-    } else if (paymentStatusFilter === "unpaid") {
+    } else if (paymentStatusFilter === 'unpaid') {
       filtered = filtered.filter((o: Order) => !o.isPaid);
     }
 
-    if (paymentMethodFilter !== "ALL") {
+    if (paymentMethodFilter !== 'ALL') {
       filtered = filtered.filter(
-        (o: Order) => o.paymentMethod === paymentMethodFilter
+        (o: Order) => o.paymentMethod === paymentMethodFilter,
       );
     }
 
@@ -101,7 +101,7 @@ function OrdersPage() {
         (o: Order) =>
           o.code.toLowerCase().includes(lowerSearch) ||
           o.customer?.name.toLowerCase().includes(lowerSearch) ||
-          o.customer?.phone.includes(search)
+          o.customer?.phone.includes(search),
       );
     }
 
@@ -116,10 +116,10 @@ function OrdersPage() {
   const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
 
   const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit',
     }).format(date);
   };
 
@@ -133,7 +133,7 @@ function OrdersPage() {
       <div className="flex-1 overflow-y-auto space-y-6 p-6">
         <Card
           className="animate-fade-in"
-          style={{ animationFillMode: "forwards" }}
+          style={{ animationFillMode: 'forwards' }}
         >
           <CardHeader className="flex flex-col gap-4">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -168,7 +168,7 @@ function OrdersPage() {
                   <Button
                     key={filter.value}
                     variant={
-                      statusFilter === filter.value ? "default" : "outline"
+                      statusFilter === filter.value ? 'default' : 'outline'
                     }
                     size="sm"
                     onClick={() => {
@@ -252,10 +252,10 @@ function OrdersPage() {
                         <TableRow
                           key={order.id}
                           className={cn(
-                            "animate-fade-in opacity-0",
-                            `stagger-${Math.min(index + 1, 5)}`
+                            'animate-fade-in opacity-0',
+                            `stagger-${Math.min(index + 1, 5)}`,
                           )}
-                          style={{ animationFillMode: "forwards" }}
+                          style={{ animationFillMode: 'forwards' }}
                         >
                           <TableCell>
                             <span className="rounded-md bg-muted px-2 py-1 font-mono text-sm">
@@ -293,15 +293,15 @@ function OrdersPage() {
                           <TableCell>
                             <div className="flex flex-col gap-1">
                               <Badge
-                                variant={order.isPaid ? "default" : "secondary"}
+                                variant={order.isPaid ? 'default' : 'secondary'}
                                 className={cn(
-                                  "text-xs",
+                                  'text-xs',
                                   order.isPaid
-                                    ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                                    : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
                                 )}
                               >
-                                {order.isPaid ? "Pago" : "Não Pago"}
+                                {order.isPaid ? 'Pago' : 'Não Pago'}
                               </Badge>
                               {order.paymentMethod && (
                                 <span className="text-muted-foreground text-xs">
@@ -313,8 +313,8 @@ function OrdersPage() {
                           <TableCell>
                             <span
                               className={cn(
-                                "inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs",
-                                orderStatusColors[order.status]
+                                'inline-flex items-center rounded-full px-2.5 py-0.5 font-medium text-xs',
+                                orderStatusColors[order.status],
                               )}
                             >
                               {orderStatusLabels[order.status]}
@@ -357,11 +357,11 @@ function OrdersPage() {
                 {totalPages > 1 && (
                   <div className="mt-4 flex items-center justify-between">
                     <p className="text-muted-foreground text-sm">
-                      Mostrando {(currentPage - 1) * ITEMS_PER_PAGE + 1} a{" "}
+                      Mostrando {(currentPage - 1) * ITEMS_PER_PAGE + 1} a{' '}
                       {Math.min(
                         currentPage * ITEMS_PER_PAGE,
-                        filteredOrders.length
-                      )}{" "}
+                        filteredOrders.length,
+                      )}{' '}
                       de {filteredOrders.length} pedidos
                     </p>
                     <div className="flex items-center gap-2">
@@ -398,11 +398,11 @@ function OrdersPage() {
                   Nenhum pedido encontrado
                 </h3>
                 <p className="mt-1 text-muted-foreground text-sm">
-                  {search || statusFilter !== "ALL"
-                    ? "Tente ajustar os filtros"
-                    : "Comece criando seu primeiro pedido"}
+                  {search || statusFilter !== 'ALL'
+                    ? 'Tente ajustar os filtros'
+                    : 'Comece criando seu primeiro pedido'}
                 </p>
-                {!search && statusFilter === "ALL" && (
+                {!search && statusFilter === 'ALL' && (
                   <Button asChild className="mt-4 gap-2">
                     <Link to="/orders/new">
                       <Plus className="h-4 w-4" />

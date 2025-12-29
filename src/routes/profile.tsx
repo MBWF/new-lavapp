@@ -1,22 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Building2, Loader2, MapPin, Phone, Save } from "lucide-react";
-import { useEffect, useState } from "react";
-import { LogoUpload } from "@/components/profile/logo-upload";
-import { Header } from "@/components/layout/header";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { createFileRoute } from '@tanstack/react-router';
+import { Building2, Loader2, MapPin, Phone, Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LogoUpload } from '@/components/profile/logo-upload';
+import { Header } from '@/components/layout/header';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   useCompanySettings,
   useUpdateCompanySettings,
   useUploadLogo,
   useDeleteLogo,
-} from "@/hooks/use-company-settings";
-import { toast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+} from '@/hooks/use-company-settings';
+import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
-export const Route = createFileRoute("/profile")({
+export const Route = createFileRoute('/profile')({
   component: ProfilePage,
 });
 
@@ -27,9 +27,9 @@ function ProfilePage() {
   const deleteLogo = useDeleteLogo();
 
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    address: "",
+    name: '',
+    phone: '',
+    address: '',
   });
 
   const [hasChanges, setHasChanges] = useState(false);
@@ -37,9 +37,9 @@ function ProfilePage() {
   useEffect(() => {
     if (companySettings) {
       setFormData({
-        name: companySettings.name || "",
-        phone: companySettings.phone || "",
-        address: companySettings.address || "",
+        name: companySettings.name || '',
+        phone: companySettings.phone || '',
+        address: companySettings.address || '',
       });
     }
   }, [companySettings]);
@@ -61,17 +61,17 @@ function ProfilePage() {
       }
 
       toast({
-        title: "Logo atualizada",
-        description: "Logo da empresa atualizada com sucesso!",
-        variant: "success",
+        title: 'Logo atualizada',
+        description: 'Logo da empresa atualizada com sucesso!',
+        variant: 'success',
       });
     } catch {
       toast({
-        title: "Erro ao fazer upload",
-        description: "Não foi possível fazer upload da logo. Tente novamente.",
-        variant: "destructive",
+        title: 'Erro ao fazer upload',
+        description: 'Não foi possível fazer upload da logo. Tente novamente.',
+        variant: 'destructive',
       });
-      throw new Error("Upload failed");
+      throw new Error('Upload failed');
     }
   };
 
@@ -87,16 +87,16 @@ function ProfilePage() {
       });
 
       toast({
-        title: "Logo removida",
-        description: "Logo da empresa removida com sucesso!",
-        variant: "success",
+        title: 'Logo removida',
+        description: 'Logo da empresa removida com sucesso!',
+        variant: 'success',
       });
     } catch (error) {
       console.error(error);
       toast({
-        title: "Erro ao remover logo",
-        description: "Não foi possível remover a logo. Tente novamente.",
-        variant: "destructive",
+        title: 'Erro ao remover logo',
+        description: 'Não foi possível remover a logo. Tente novamente.',
+        variant: 'destructive',
       });
     }
   };
@@ -108,9 +108,9 @@ function ProfilePage() {
 
     if (!formData.name.trim()) {
       toast({
-        title: "Nome obrigatório",
-        description: "Por favor, informe o nome da empresa.",
-        variant: "destructive",
+        title: 'Nome obrigatório',
+        description: 'Por favor, informe o nome da empresa.',
+        variant: 'destructive',
       });
       return;
     }
@@ -128,15 +128,15 @@ function ProfilePage() {
       setHasChanges(false);
 
       toast({
-        title: "Alterações salvas",
-        description: "Informações da empresa atualizadas com sucesso!",
-        variant: "success",
+        title: 'Alterações salvas',
+        description: 'Informações da empresa atualizadas com sucesso!',
+        variant: 'success',
       });
     } catch {
       toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar as alterações. Tente novamente.",
-        variant: "destructive",
+        title: 'Erro ao salvar',
+        description: 'Não foi possível salvar as alterações. Tente novamente.',
+        variant: 'destructive',
       });
     }
   };
@@ -196,7 +196,7 @@ function ProfilePage() {
                   <Input
                     id="name"
                     value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
                     placeholder="Nome da empresa"
                     maxLength={100}
                     required
@@ -211,7 +211,7 @@ function ProfilePage() {
                   <Input
                     id="phone"
                     value={formData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
                     placeholder="(11) 99999-9999"
                     type="tel"
                   />
@@ -226,7 +226,7 @@ function ProfilePage() {
                     id="address"
                     value={formData.address}
                     onChange={(e) =>
-                      handleInputChange("address", e.target.value)
+                      handleInputChange('address', e.target.value)
                     }
                     placeholder="Rua, número, bairro, cidade, estado..."
                     rows={3}
@@ -256,8 +256,8 @@ function ProfilePage() {
               type="submit"
               disabled={!hasChanges || updateSettings.isPending}
               className={cn(
-                "gap-2",
-                !hasChanges && "cursor-not-allowed opacity-50"
+                'gap-2',
+                !hasChanges && 'cursor-not-allowed opacity-50',
               )}
             >
               {updateSettings.isPending ? (

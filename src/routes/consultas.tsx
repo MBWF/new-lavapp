@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useState } from 'react';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   Droplets,
   Phone,
@@ -12,19 +12,19 @@ import {
   CheckCircle2,
   XCircle,
   Sparkles,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { cn, formatCurrency } from "@/lib/utils";
-import { ordersQueries, type Order } from "@/supabase/queries/orders";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { cn, formatCurrency } from '@/lib/utils';
+import { ordersQueries, type Order } from '@/supabase/queries/orders';
 import {
   orderStatusLabels,
   orderStatusColors,
   deliveryTypeLabels,
-} from "@/types/order";
+} from '@/types/order';
 
-export const Route = createFileRoute("/consultas")({
+export const Route = createFileRoute('/consultas')({
   component: ConsultasPage,
 });
 
@@ -37,14 +37,14 @@ const statusIcons: Record<string, React.ReactNode> = {
 };
 
 function ConsultasPage() {
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const formatPhone = (value: string) => {
-    const digits = value.replace(/\D/g, "");
+    const digits = value.replace(/\D/g, '');
     if (digits.length <= 2) return digits;
     if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
     if (digits.length <= 11)
@@ -62,14 +62,14 @@ function ConsultasPage() {
     if (!phone.trim()) return;
 
     setIsLoading(true);
-    setError("");
+    setError('');
     setHasSearched(true);
 
     try {
       const result = await ordersQueries.getByPhone(phone);
       setOrders(result);
     } catch {
-      setError("Erro ao buscar pedidos. Tente novamente.");
+      setError('Erro ao buscar pedidos. Tente novamente.');
       setOrders([]);
     } finally {
       setIsLoading(false);
@@ -77,10 +77,10 @@ function ConsultasPage() {
   };
 
   const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     }).format(date);
   };
 
@@ -160,17 +160,17 @@ function ConsultasPage() {
             {orders.length > 0 ? (
               <>
                 <p className="text-center text-sm text-white/60">
-                  {orders.length} pedido{orders.length !== 1 ? "s" : ""}{" "}
-                  encontrado{orders.length !== 1 ? "s" : ""}
+                  {orders.length} pedido{orders.length !== 1 ? 's' : ''}{' '}
+                  encontrado{orders.length !== 1 ? 's' : ''}
                 </p>
                 {orders.map((order, index) => (
                   <Card
                     key={order.id}
                     className={cn(
-                      "border-white/10 bg-white/10 shadow-xl backdrop-blur-xl opacity-0 animate-fade-in",
-                      `stagger-${Math.min(index + 1, 5)}`
+                      'border-white/10 bg-white/10 shadow-xl backdrop-blur-xl opacity-0 animate-fade-in',
+                      `stagger-${Math.min(index + 1, 5)}`,
                     )}
-                    style={{ animationFillMode: "forwards" }}
+                    style={{ animationFillMode: 'forwards' }}
                   >
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between gap-4">
@@ -182,8 +182,8 @@ function ConsultasPage() {
                             </span>
                             <span
                               className={cn(
-                                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium",
-                                orderStatusColors[order.status]
+                                'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
+                                orderStatusColors[order.status],
                               )}
                             >
                               {statusIcons[order.status]}
@@ -202,7 +202,7 @@ function ConsultasPage() {
                             <div className="flex items-center gap-2 text-white/70">
                               <Clock className="h-4 w-4 text-white/50" />
                               <span>
-                                Entrega: {formatDate(order.deliveryDate)} às{" "}
+                                Entrega: {formatDate(order.deliveryDate)} às{' '}
                                 {order.deliveryTime}
                               </span>
                             </div>
@@ -220,7 +220,7 @@ function ConsultasPage() {
                               <Package className="h-4 w-4 text-white/50" />
                               <span className="text-sm">
                                 {order.items.length} item
-                                {order.items.length !== 1 ? "s" : ""}
+                                {order.items.length !== 1 ? 's' : ''}
                               </span>
                             </div>
                             <div className="ml-auto">

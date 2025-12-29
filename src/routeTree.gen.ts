@@ -21,6 +21,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
 import { Route as OrdersNewRouteImport } from './routes/orders.new'
 import { Route as OrdersOrderIdRouteImport } from './routes/orders.$orderId'
+import { Route as CustomersCustomerIdOrdersRouteImport } from './routes/customers.$customerId.orders'
 
 const TrackingRoute = TrackingRouteImport.update({
   id: '/tracking',
@@ -82,11 +83,17 @@ const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
   path: '/orders/$orderId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CustomersCustomerIdOrdersRoute =
+  CustomersCustomerIdOrdersRouteImport.update({
+    id: '/$customerId/orders',
+    path: '/$customerId/orders',
+    getParentRoute: () => CustomersRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/consultas': typeof ConsultasRoute
-  '/customers': typeof CustomersRoute
+  '/customers': typeof CustomersRouteWithChildren
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/perfil': typeof PerfilRoute
@@ -96,11 +103,12 @@ export interface FileRoutesByFullPath {
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/orders/new': typeof OrdersNewRoute
   '/orders': typeof OrdersIndexRoute
+  '/customers/$customerId/orders': typeof CustomersCustomerIdOrdersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/consultas': typeof ConsultasRoute
-  '/customers': typeof CustomersRoute
+  '/customers': typeof CustomersRouteWithChildren
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/perfil': typeof PerfilRoute
@@ -110,12 +118,13 @@ export interface FileRoutesByTo {
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/orders/new': typeof OrdersNewRoute
   '/orders': typeof OrdersIndexRoute
+  '/customers/$customerId/orders': typeof CustomersCustomerIdOrdersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/consultas': typeof ConsultasRoute
-  '/customers': typeof CustomersRoute
+  '/customers': typeof CustomersRouteWithChildren
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/perfil': typeof PerfilRoute
@@ -125,6 +134,7 @@ export interface FileRoutesById {
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/orders/new': typeof OrdersNewRoute
   '/orders/': typeof OrdersIndexRoute
+  '/customers/$customerId/orders': typeof CustomersCustomerIdOrdersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/orders/new'
     | '/orders'
+    | '/customers/$customerId/orders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/orders/new'
     | '/orders'
+    | '/customers/$customerId/orders'
   id:
     | '__root__'
     | '/'
@@ -169,12 +181,13 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/orders/new'
     | '/orders/'
+    | '/customers/$customerId/orders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConsultasRoute: typeof ConsultasRoute
-  CustomersRoute: typeof CustomersRoute
+  CustomersRoute: typeof CustomersRouteWithChildren
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   PerfilRoute: typeof PerfilRoute
@@ -272,13 +285,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersOrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/customers/$customerId/orders': {
+      id: '/customers/$customerId/orders'
+      path: '/$customerId/orders'
+      fullPath: '/customers/$customerId/orders'
+      preLoaderRoute: typeof CustomersCustomerIdOrdersRouteImport
+      parentRoute: typeof CustomersRoute
+    }
   }
 }
+
+interface CustomersRouteChildren {
+  CustomersCustomerIdOrdersRoute: typeof CustomersCustomerIdOrdersRoute
+}
+
+const CustomersRouteChildren: CustomersRouteChildren = {
+  CustomersCustomerIdOrdersRoute: CustomersCustomerIdOrdersRoute,
+}
+
+const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
+  CustomersRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConsultasRoute: ConsultasRoute,
-  CustomersRoute: CustomersRoute,
+  CustomersRoute: CustomersRouteWithChildren,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   PerfilRoute: PerfilRoute,

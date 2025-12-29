@@ -1,22 +1,22 @@
-import { Header } from "@/components/layout/header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Header } from '@/components/layout/header';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useCustomers } from "@/hooks/use-customers";
+} from '@/components/ui/select';
+import { useCustomers } from '@/hooks/use-customers';
 import {
   useFinancialSummary,
   useRevenueByPeriod,
   type PeriodType,
-} from "@/hooks/use-financial-reports";
-import { useOrders } from "@/hooks/use-orders";
-import { cn, formatCurrency, formatPhone } from "@/lib/utils";
-import { paymentMethodLabels } from "@/types/order";
-import { createFileRoute } from "@tanstack/react-router";
+} from '@/hooks/use-financial-reports';
+import { useOrders } from '@/hooks/use-orders';
+import { cn, formatCurrency, formatPhone } from '@/lib/utils';
+import { paymentMethodLabels } from '@/types/order';
+import { createFileRoute } from '@tanstack/react-router';
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -28,8 +28,8 @@ import {
   TrendingUp,
   Users,
   XCircle,
-} from "lucide-react";
-import { useMemo, useState } from "react";
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
 import {
   CartesianGrid,
   Legend,
@@ -39,9 +39,9 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
+} from 'recharts';
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute('/')({
   component: DashboardPage,
 });
 
@@ -67,17 +67,17 @@ function StatCard({
   return (
     <Card
       className={cn(
-        "relative animate-fade-in overflow-hidden opacity-0",
-        `stagger-${delay}`
+        'relative animate-fade-in overflow-hidden opacity-0',
+        `stagger-${delay}`,
       )}
-      style={{ animationFillMode: "forwards" }}
+      style={{ animationFillMode: 'forwards' }}
     >
-      <div className={cn("absolute inset-0 opacity-5", gradient)} />
+      <div className={cn('absolute inset-0 opacity-5', gradient)} />
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="font-medium text-muted-foreground text-sm">
           {title}
         </CardTitle>
-        <div className={cn("rounded-lg p-2", gradient)}>
+        <div className={cn('rounded-lg p-2', gradient)}>
           <Icon className="h-4 w-4 text-white" />
         </div>
       </CardHeader>
@@ -89,7 +89,7 @@ function StatCard({
           ) : (
             <ArrowDownRight className="h-3 w-3 text-red-500" />
           )}
-          <span className={isPositive ? "text-green-500" : "text-red-500"}>
+          <span className={isPositive ? 'text-green-500' : 'text-red-500'}>
             {Math.abs(change)}%
           </span>
           <span className="text-muted-foreground">vs. semana passada</span>
@@ -104,26 +104,26 @@ function DashboardPage() {
   const { data: orders = [], isLoading: isLoadingOrders } = useOrders();
   const recentCustomers = customers.slice(0, 5);
 
-  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>("day");
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
   const [financialPeriod, setFinancialPeriod] = useState<
-    "today" | "week" | "month" | "year"
-  >("month");
+    'today' | 'week' | 'month' | 'year'
+  >('month');
 
   const getFinancialDateRange = () => {
     const now = new Date();
     const start = new Date();
 
     switch (financialPeriod) {
-      case "today":
+      case 'today':
         start.setHours(0, 0, 0, 0);
         break;
-      case "week":
+      case 'week':
         start.setDate(now.getDate() - 7);
         break;
-      case "month":
+      case 'month':
         start.setMonth(now.getMonth() - 1);
         break;
-      case "year":
+      case 'year':
         start.setFullYear(now.getFullYear() - 1);
         break;
     }
@@ -178,12 +178,12 @@ function DashboardPage() {
     });
 
     const pendingOrders = orders.filter(
-      (order) => order.status !== "DELIVERED" && order.status !== "CANCELLED"
+      (order) => order.status !== 'DELIVERED' && order.status !== 'CANCELLED',
     );
 
     const revenueThisMonth = ordersThisMonth.reduce(
       (sum, order) => sum + order.total,
-      0
+      0,
     );
 
     const calculateChange = (current: number, previous: number) => {
@@ -195,12 +195,12 @@ function DashboardPage() {
       totalCustomers: customers.length,
       customersChange: calculateChange(
         customersLastWeek.length,
-        customersTwoWeeksAgo.length
+        customersTwoWeeksAgo.length,
       ),
       ordersToday: ordersToday.length,
       ordersTodayChange: calculateChange(
         ordersLastWeek.length,
-        ordersTwoWeeksAgo.length
+        ordersTwoWeeksAgo.length,
       ),
       revenueThisMonth,
       revenueChange: 0,
@@ -221,10 +221,10 @@ function DashboardPage() {
   }
 
   const financialPeriodLabels = {
-    today: "Hoje",
-    week: "Últimos 7 dias",
-    month: "Último mês",
-    year: "Último ano",
+    today: 'Hoje',
+    week: 'Últimos 7 dias',
+    month: 'Último mês',
+    year: 'Último ano',
   };
 
   return (
@@ -269,7 +269,7 @@ function DashboardPage() {
 
         <Card
           className="stagger-5 animate-fade-in opacity-0"
-          style={{ animationFillMode: "forwards" }}
+          style={{ animationFillMode: 'forwards' }}
         >
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
@@ -388,7 +388,7 @@ function DashboardPage() {
                         {formatCurrency(data.total)}
                       </p>
                     </div>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -398,7 +398,7 @@ function DashboardPage() {
         <div className="grid gap-6 lg:grid-cols-7">
           <Card
             className="stagger-6 animate-fade-in opacity-0 lg:col-span-4"
-            style={{ animationFillMode: "forwards" }}
+            style={{ animationFillMode: 'forwards' }}
           >
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
@@ -449,12 +449,12 @@ function DashboardPage() {
                     />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "hsl(var(--popover))",
-                        border: "1px solid hsl(var(--border))",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        backgroundColor: 'hsl(var(--popover))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                       }}
-                      labelStyle={{ color: "hsl(var(--foreground))" }}
+                      labelStyle={{ color: 'hsl(var(--foreground))' }}
                       formatter={(value: number) => formatCurrency(value)}
                     />
                     <Legend />
@@ -464,7 +464,7 @@ function DashboardPage() {
                       name="Receita Total"
                       stroke="hsl(var(--primary))"
                       strokeWidth={2}
-                      dot={{ fill: "hsl(var(--primary))" }}
+                      dot={{ fill: 'hsl(var(--primary))' }}
                     />
                     <Line
                       type="monotone"
@@ -472,7 +472,7 @@ function DashboardPage() {
                       name="Receita Recebida"
                       stroke="hsl(142.1 76.2% 36.3%)"
                       strokeWidth={2}
-                      dot={{ fill: "hsl(142.1 76.2% 36.3%)" }}
+                      dot={{ fill: 'hsl(142.1 76.2% 36.3%)' }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -482,7 +482,7 @@ function DashboardPage() {
 
           <Card
             className="stagger-5 animate-fade-in opacity-0 lg:col-span-3"
-            style={{ animationFillMode: "forwards", animationDelay: "0.3s" }}
+            style={{ animationFillMode: 'forwards', animationDelay: '0.3s' }}
           >
             <CardHeader>
               <CardTitle className="font-semibold text-base">
@@ -498,17 +498,17 @@ function DashboardPage() {
                   <div
                     key={customer.id}
                     className={cn(
-                      "flex animate-slide-in-left items-center justify-between rounded-lg border p-3 opacity-0 transition-colors hover:bg-muted/50",
-                      `stagger-${index + 1}`
+                      'flex animate-slide-in-left items-center justify-between rounded-lg border p-3 opacity-0 transition-colors hover:bg-muted/50',
+                      `stagger-${index + 1}`,
                     )}
-                    style={{ animationFillMode: "forwards" }}
+                    style={{ animationFillMode: 'forwards' }}
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 font-semibold text-primary text-sm">
                         {customer.name
-                          .split(" ")
+                          .split(' ')
                           .map((n) => n[0])
-                          .join("")
+                          .join('')
                           .slice(0, 2)
                           .toUpperCase()}
                       </div>

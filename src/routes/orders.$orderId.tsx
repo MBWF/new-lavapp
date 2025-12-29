@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate, createFileRoute } from "@tanstack/react-router";
+import { useState } from 'react';
+import { Link, useNavigate, createFileRoute } from '@tanstack/react-router';
 import {
   ArrowLeft,
   User,
@@ -16,19 +16,19 @@ import {
   AlertTriangle,
   Wallet,
   CreditCard,
-} from "lucide-react";
-import { Header } from "@/components/layout/header";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+} from 'lucide-react';
+import { Header } from '@/components/layout/header';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
-import { ORDER_STATUS_OPTIONS } from "@/types/order";
+} from '@/components/ui/select';
+import { ORDER_STATUS_OPTIONS } from '@/types/order';
 import {
   Dialog,
   DialogContent,
@@ -36,23 +36,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   useOrder,
   useUpdateOrderStatus,
   useUpdateOrder,
   useDeleteOrder,
-} from "@/hooks/use-orders";
-import { toast } from "@/hooks/use-toast";
-import { formatCurrency, formatPhone, cn } from "@/lib/utils";
+} from '@/hooks/use-orders';
+import { toast } from '@/hooks/use-toast';
+import { formatCurrency, formatPhone, cn } from '@/lib/utils';
 import {
   orderStatusLabels,
   deliveryTypeLabels,
   paymentMethodLabels,
   type OrderStatus,
-} from "@/types/order";
+} from '@/types/order';
 
-export const Route = createFileRoute("/orders/$orderId")({
+export const Route = createFileRoute('/orders/$orderId')({
   component: OrderDetailsPage,
 });
 
@@ -67,20 +67,20 @@ function OrderDetailsPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const formatDate = (date: Date): string => {
-    return new Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     }).format(date);
   };
 
   const formatDateTime = (date: Date): string => {
-    return new Intl.DateTimeFormat("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     }).format(date);
   };
 
@@ -93,15 +93,15 @@ function OrderDetailsPage() {
         status: newStatus as OrderStatus,
       });
       toast({
-        title: "Status atualizado",
+        title: 'Status atualizado',
         description: `Pedido alterado para ${orderStatusLabels[newStatus as OrderStatus]}`,
-        variant: "success",
+        variant: 'success',
       });
     } catch {
       toast({
-        title: "Erro ao atualizar",
-        description: "Não foi possível atualizar o status.",
-        variant: "destructive",
+        title: 'Erro ao atualizar',
+        description: 'Não foi possível atualizar o status.',
+        variant: 'destructive',
       });
     }
   };
@@ -112,16 +112,16 @@ function OrderDetailsPage() {
     try {
       await deleteOrder.mutateAsync(order.id);
       toast({
-        title: "Pedido excluído",
-        description: "O pedido foi removido com sucesso.",
-        variant: "success",
+        title: 'Pedido excluído',
+        description: 'O pedido foi removido com sucesso.',
+        variant: 'success',
       });
-      navigate({ to: "/orders" });
+      navigate({ to: '/orders' });
     } catch {
       toast({
-        title: "Erro ao excluir",
-        description: "Não é possível excluir pedidos finalizados.",
-        variant: "destructive",
+        title: 'Erro ao excluir',
+        description: 'Não é possível excluir pedidos finalizados.',
+        variant: 'destructive',
       });
     }
     setIsDeleteOpen(false);
@@ -136,23 +136,23 @@ function OrderDetailsPage() {
         isPaid: !order.isPaid,
       });
       toast({
-        title: "Pagamento atualizado",
+        title: 'Pagamento atualizado',
         description: order.isPaid
-          ? "Pagamento marcado como não recebido"
-          : "Pagamento marcado como recebido",
-        variant: "success",
+          ? 'Pagamento marcado como não recebido'
+          : 'Pagamento marcado como recebido',
+        variant: 'success',
       });
     } catch {
       toast({
-        title: "Erro ao atualizar",
-        description: "Não foi possível atualizar o status de pagamento.",
-        variant: "destructive",
+        title: 'Erro ao atualizar',
+        description: 'Não foi possível atualizar o status de pagamento.',
+        variant: 'destructive',
       });
     }
   };
 
   const canDelete =
-    order && order.status !== "DELIVERED" && order.status !== "CANCELLED";
+    order && order.status !== 'DELIVERED' && order.status !== 'CANCELLED';
 
   if (isLoading) {
     return (
@@ -271,7 +271,7 @@ function OrderDetailsPage() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  {order.deliveryType === "PICKUP" ? (
+                  {order.deliveryType === 'PICKUP' ? (
                     <Store className="h-5 w-5" />
                   ) : (
                     <Truck className="h-5 w-5" />
@@ -283,10 +283,10 @@ function OrderDetailsPage() {
                 <div className="flex items-center gap-2">
                   <span
                     className={cn(
-                      "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                      order.deliveryType === "DELIVERY"
-                        ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                        : "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400"
+                      'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium',
+                      order.deliveryType === 'DELIVERY'
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                        : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
                     )}
                   >
                     {deliveryTypeLabels[order.deliveryType]}
@@ -314,7 +314,7 @@ function OrderDetailsPage() {
                   </div>
                 </div>
 
-                {order.deliveryType === "DELIVERY" && order.deliveryAddress && (
+                {order.deliveryType === 'DELIVERY' && order.deliveryAddress && (
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Endereço</p>
                     <div className="flex items-start gap-2">
@@ -342,7 +342,7 @@ function OrderDetailsPage() {
                     <p className="mt-1 font-medium">
                       {order.paymentMethod
                         ? paymentMethodLabels[order.paymentMethod]
-                        : "Não informado"}
+                        : 'Não informado'}
                     </p>
                   </div>
 
@@ -354,10 +354,10 @@ function OrderDetailsPage() {
                       <div className="flex items-center gap-3">
                         <div
                           className={cn(
-                            "flex h-10 w-10 items-center justify-center rounded-lg",
+                            'flex h-10 w-10 items-center justify-center rounded-lg',
                             order.isPaid
-                              ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                              : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                              : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
                           )}
                         >
                           <CreditCard className="h-5 w-5" />
@@ -365,13 +365,13 @@ function OrderDetailsPage() {
                         <div>
                           <p className="font-medium">
                             {order.isPaid
-                              ? "Pagamento Recebido"
-                              : "Pagamento Pendente"}
+                              ? 'Pagamento Recebido'
+                              : 'Pagamento Pendente'}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             {order.isPaid
-                              ? "Pedido já foi pago"
-                              : "Aguardando pagamento"}
+                              ? 'Pedido já foi pago'
+                              : 'Aguardando pagamento'}
                           </p>
                         </div>
                       </div>
@@ -380,14 +380,14 @@ function OrderDetailsPage() {
 
                   <Button
                     onClick={handlePaymentToggle}
-                    variant={order.isPaid ? "outline" : "default"}
+                    variant={order.isPaid ? 'outline' : 'default'}
                     className="w-full"
                     disabled={updateOrder.isPending}
                   >
                     {updateOrder.isPending ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : null}
-                    {order.isPaid ? "Marcar como Não Pago" : "Marcar como Pago"}
+                    {order.isPaid ? 'Marcar como Não Pago' : 'Marcar como Pago'}
                   </Button>
                 </div>
               </CardContent>
@@ -452,9 +452,9 @@ function OrderDetailsPage() {
                   <div className="flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-sm font-semibold text-primary">
                       {order.customer.name
-                        .split(" ")
+                        .split(' ')
                         .map((n) => n[0])
-                        .join("")
+                        .join('')
                         .slice(0, 2)
                         .toUpperCase()}
                     </div>
@@ -513,7 +513,7 @@ function OrderDetailsPage() {
               Excluir Pedido
             </DialogTitle>
             <DialogDescription className="text-center">
-              Tem certeza que deseja excluir o pedido{" "}
+              Tem certeza que deseja excluir o pedido{' '}
               <span className="font-semibold text-foreground">
                 {order.code}
               </span>

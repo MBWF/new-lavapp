@@ -1,10 +1,10 @@
-import { ImageIcon, Loader2, Upload, X } from "lucide-react";
-import { useState } from "react";
-import { useDropzone } from "react-dropzone";
-import imageCompression from "browser-image-compression";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
+import { ImageIcon, Loader2, Upload, X } from 'lucide-react';
+import { useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import imageCompression from 'browser-image-compression';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 interface LogoUploadProps {
   currentLogoUrl: string | null;
@@ -15,9 +15,9 @@ interface LogoUploadProps {
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_FORMATS = {
-  "image/png": [".png"],
-  "image/jpeg": [".jpg", ".jpeg"],
-  "image/webp": [".webp"],
+  'image/png': ['.png'],
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/webp': ['.webp'],
 };
 
 export function LogoUpload({
@@ -38,7 +38,7 @@ export function LogoUpload({
         });
         return compressedFile;
       } catch (error) {
-        throw new Error("Erro ao comprimir imagem. Tente uma imagem menor.");
+        throw new Error('Erro ao comprimir imagem. Tente uma imagem menor.');
       }
     }
     return file;
@@ -47,9 +47,9 @@ export function LogoUpload({
   const onDrop = async (acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) {
       toast({
-        title: "Arquivo inválido",
-        description: "Por favor, selecione uma imagem PNG, JPG ou WEBP.",
-        variant: "destructive",
+        title: 'Arquivo inválido',
+        description: 'Por favor, selecione uma imagem PNG, JPG ou WEBP.',
+        variant: 'destructive',
       });
       return;
     }
@@ -69,10 +69,10 @@ export function LogoUpload({
       await onUpload(validatedFile);
     } catch (error) {
       toast({
-        title: "Erro ao processar imagem",
+        title: 'Erro ao processar imagem',
         description:
-          error instanceof Error ? error.message : "Tente novamente.",
-        variant: "destructive",
+          error instanceof Error ? error.message : 'Tente novamente.',
+        variant: 'destructive',
       });
     }
   };
@@ -96,11 +96,11 @@ export function LogoUpload({
       <div
         {...getRootProps()}
         className={cn(
-          "relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-colors cursor-pointer",
+          'relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 transition-colors cursor-pointer',
           isDragActive
-            ? "border-primary bg-primary/5"
-            : "border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50",
-          isUploading && "pointer-events-none opacity-50"
+            ? 'border-primary bg-primary/5'
+            : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-muted/50',
+          isUploading && 'pointer-events-none opacity-50',
         )}
       >
         <input {...getInputProps()} />
@@ -130,8 +130,8 @@ export function LogoUpload({
             <div>
               <p className="font-medium text-sm">
                 {isDragActive
-                  ? "Solte a imagem aqui"
-                  : "Arraste uma imagem ou clique para selecionar"}
+                  ? 'Solte a imagem aqui'
+                  : 'Arraste uma imagem ou clique para selecionar'}
               </p>
               <p className="mt-1 text-muted-foreground text-xs">
                 PNG, JPG ou WEBP até 2MB
@@ -156,4 +156,3 @@ export function LogoUpload({
     </div>
   );
 }
-

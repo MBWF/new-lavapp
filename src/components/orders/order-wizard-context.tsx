@@ -1,7 +1,7 @@
-import { createContext, type ReactNode, useContext, useState } from "react";
-import type { Customer } from "@/types/customer";
-import type { DeliveryType, PAYMENT_METHOD_OPTIONS } from "@/types/order";
-import type { Piece } from "@/types/piece";
+import { createContext, type ReactNode, useContext, useState } from 'react';
+import type { Customer } from '@/types/customer';
+import type { DeliveryType, PAYMENT_METHOD_OPTIONS } from '@/types/order';
+import type { Piece } from '@/types/piece';
 
 export interface OrderItemDraft {
   piece: Piece;
@@ -21,7 +21,7 @@ export interface OrderWizardData {
   deliveryAddress: string;
   notes: string;
   specialInstructions: string;
-  paymentMethod: (typeof PAYMENT_METHOD_OPTIONS)[number]["value"] | null;
+  paymentMethod: (typeof PAYMENT_METHOD_OPTIONS)[number]['value'] | null;
   isPaid: boolean;
 }
 
@@ -43,14 +43,14 @@ const initialData: OrderWizardData = {
   customer: null,
   isAnonymous: false,
   items: [],
-  deliveryType: "PICKUP",
+  deliveryType: 'PICKUP',
   pickupDate: null,
-  pickupTime: "",
+  pickupTime: '',
   deliveryDate: null,
-  deliveryTime: "",
-  deliveryAddress: "",
-  notes: "",
-  specialInstructions: "",
+  deliveryTime: '',
+  deliveryAddress: '',
+  notes: '',
+  specialInstructions: '',
   paymentMethod: null,
   isPaid: false,
 };
@@ -71,7 +71,7 @@ export function OrderWizardProvider({ children }: { children: ReactNode }) {
   const addItem = (piece: Piece) => {
     setData((prev) => {
       const existingIndex = prev.items.findIndex(
-        (item) => item.piece.id === piece.id
+        (item) => item.piece.id === piece.id,
       );
       if (existingIndex >= 0) {
         const newItems = [...prev.items];
@@ -107,7 +107,7 @@ export function OrderWizardProvider({ children }: { children: ReactNode }) {
       items: prev.items.map((item) =>
         item.piece.id === pieceId
           ? { ...item, quantity, subtotal: quantity * item.piece.price }
-          : item
+          : item,
       ),
     }));
   };
@@ -135,7 +135,7 @@ export function OrderWizardProvider({ children }: { children: ReactNode }) {
         return (
           data.pickupDate !== null &&
           data.deliveryDate !== null &&
-          (data.deliveryType === "PICKUP" || data.deliveryAddress.trim() !== "")
+          (data.deliveryType === 'PICKUP' || data.deliveryAddress.trim() !== '')
         );
       case 4:
         return data.paymentMethod !== null;
@@ -169,7 +169,7 @@ export function useOrderWizard() {
   const context = useContext(OrderWizardContext);
   if (!context) {
     throw new Error(
-      "useOrderWizard must be used within an OrderWizardProvider"
+      'useOrderWizard must be used within an OrderWizardProvider',
     );
   }
   return context;

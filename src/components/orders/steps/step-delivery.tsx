@@ -6,15 +6,15 @@ import {
   MapPin,
   Store,
   Truck,
-} from "lucide-react";
-import { useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/components/ui/date-picker";
-import { cn } from "@/lib/utils";
-import type { DeliveryType } from "@/types/order";
-import { useOrderWizard } from "../order-wizard-context";
+} from 'lucide-react';
+import { useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { DatePicker } from '@/components/ui/date-picker';
+import { cn } from '@/lib/utils';
+import type { DeliveryType } from '@/types/order';
+import { useOrderWizard } from '../order-wizard-context';
 
 const getCurrentTime = () => {
   const now = new Date();
@@ -54,8 +54,8 @@ export function StepDelivery() {
   ]);
 
   const handleDateChange = (
-    field: "pickupDate" | "deliveryDate",
-    date: Date | undefined
+    field: 'pickupDate' | 'deliveryDate',
+    date: Date | undefined,
   ) => {
     setDeliveryInfo({ [field]: date || null });
   };
@@ -73,26 +73,26 @@ export function StepDelivery() {
         <div>
           <Label className="font-semibold text-base">Tipo de Entrega</Label>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            {(["PICKUP", "DELIVERY"] as DeliveryType[]).map((type) => (
+            {(['PICKUP', 'DELIVERY'] as DeliveryType[]).map((type) => (
               <Card
                 key={type}
                 className={cn(
-                  "cursor-pointer transition-all hover:border-primary/50",
+                  'cursor-pointer transition-all hover:border-primary/50',
                   data.deliveryType === type &&
-                    "border-2 border-primary bg-primary/5"
+                    'border-2 border-primary bg-primary/5',
                 )}
                 onClick={() => setDeliveryInfo({ deliveryType: type })}
               >
                 <CardContent className="flex items-center gap-4 p-4">
                   <div
                     className={cn(
-                      "flex h-12 w-12 items-center justify-center rounded-lg",
+                      'flex h-12 w-12 items-center justify-center rounded-lg',
                       data.deliveryType === type
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted',
                     )}
                   >
-                    {type === "PICKUP" ? (
+                    {type === 'PICKUP' ? (
                       <Store className="h-6 w-6" />
                     ) : (
                       <Truck className="h-6 w-6" />
@@ -100,12 +100,12 @@ export function StepDelivery() {
                   </div>
                   <div>
                     <p className="font-medium">
-                      {type === "PICKUP" ? "Retirada na Loja" : "Delivery"}
+                      {type === 'PICKUP' ? 'Retirada na Loja' : 'Delivery'}
                     </p>
                     <p className="text-muted-foreground text-sm">
-                      {type === "PICKUP"
-                        ? "Cliente retira na loja"
-                        : "Entrega no endereço"}
+                      {type === 'PICKUP'
+                        ? 'Cliente retira na loja'
+                        : 'Entrega no endereço'}
                     </p>
                   </div>
                 </CardContent>
@@ -127,7 +127,7 @@ export function StepDelivery() {
                   <DatePicker
                     id="pickup-date"
                     date={data.pickupDate || new Date()}
-                    onSelect={(date) => handleDateChange("pickupDate", date)}
+                    onSelect={(date) => handleDateChange('pickupDate', date)}
                     placeholder="Selecione a data"
                     fromDate={new Date()}
                     className="w-full"
@@ -140,7 +140,7 @@ export function StepDelivery() {
                     <Input
                       id="pickup-time"
                       type="time"
-                      value={data.pickupTime || ""}
+                      value={data.pickupTime || ''}
                       onChange={(e) =>
                         setDeliveryInfo({ pickupTime: e.target.value })
                       }
@@ -164,7 +164,7 @@ export function StepDelivery() {
                   <DatePicker
                     id="delivery-date"
                     date={data.deliveryDate}
-                    onSelect={(date) => handleDateChange("deliveryDate", date)}
+                    onSelect={(date) => handleDateChange('deliveryDate', date)}
                     placeholder="Selecione a data"
                     fromDate={data.pickupDate || new Date()}
                     className="w-full"
@@ -177,7 +177,7 @@ export function StepDelivery() {
                     <Input
                       id="delivery-time"
                       type="time"
-                      value={data.deliveryTime || ""}
+                      value={data.deliveryTime || ''}
                       onChange={(e) =>
                         setDeliveryInfo({ deliveryTime: e.target.value })
                       }
@@ -190,7 +190,7 @@ export function StepDelivery() {
           </Card>
         </div>
 
-        {data.deliveryType === "DELIVERY" && (
+        {data.deliveryType === 'DELIVERY' && (
           <Card>
             <CardContent className="space-y-4 p-4">
               <div className="flex items-center gap-2 font-semibold text-lg">
@@ -208,7 +208,7 @@ export function StepDelivery() {
                   }
                 />
               </div>
-              {data.deliveryType === "DELIVERY" && !data.deliveryAddress && (
+              {data.deliveryType === 'DELIVERY' && !data.deliveryAddress && (
                 <div className="flex items-center gap-2 text-amber-600 text-sm dark:text-amber-400">
                   <AlertCircle className="h-4 w-4" />
                   Endereço é obrigatório para delivery

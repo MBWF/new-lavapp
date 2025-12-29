@@ -23,6 +23,7 @@ export type {
 export {
   useCreateOrder,
   useDeleteOrder,
+  useOrdersByCustomerId,
   useOrder,
   useOrders,
   useOrdersByDateRange,
