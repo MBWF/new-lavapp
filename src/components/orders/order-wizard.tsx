@@ -57,6 +57,8 @@ function WizardContent() {
         deliveryAddress: data.deliveryAddress,
         notes: data.notes,
         specialInstructions: data.specialInstructions,
+        paymentMethod: data.paymentMethod!,
+        isPaid: data.isPaid,
       });
 
       toast({

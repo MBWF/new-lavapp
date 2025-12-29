@@ -4,6 +4,7 @@ export type {
   OrderHistory,
   OrderStatus,
   DeliveryType,
+  PaymentMethod,
   CreateOrderInput,
   UpdateOrderInput,
 } from '@/supabase/hooks';
@@ -40,3 +41,17 @@ export const ORDER_STATUS_OPTIONS = [
 ];
 
 export const ORDER_STATUS_STEPS = ['RECEIVED', 'WASHING', 'READY', 'DELIVERED'] as const;
+
+export const paymentMethodLabels: Record<string, string> = {
+  CASH: 'Dinheiro',
+  CREDIT_CARD: 'Cartão de Crédito',
+  DEBIT_CARD: 'Cartão de Débito',
+  PIX: 'PIX',
+};
+
+export const PAYMENT_METHOD_OPTIONS = [
+  { value: 'CASH' as const, label: paymentMethodLabels.CASH },
+  { value: 'CREDIT_CARD' as const, label: paymentMethodLabels.CREDIT_CARD },
+  { value: 'DEBIT_CARD' as const, label: paymentMethodLabels.DEBIT_CARD },
+  { value: 'PIX' as const, label: paymentMethodLabels.PIX },
+];

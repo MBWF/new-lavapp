@@ -8,12 +8,22 @@ import {
   Plus,
   Search,
   User,
+  CreditCard,
+  Filter,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -34,6 +44,9 @@ import {
   type OrderStatus,
   orderStatusColors,
   orderStatusLabels,
+  paymentMethodLabels,
+  type PaymentMethod,
+  PAYMENT_METHOD_OPTIONS,
 } from "@/types/order";
 
 export const Route = createFileRoute("/orders/")({
@@ -53,6 +66,8 @@ const statusFilters: Array<{ value: OrderStatus | "ALL"; label: string }> = [
 function OrdersPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState<'all' | 'paid' | 'unpaid'>('all');
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<PaymentMethod | 'ALL'>('ALL');
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: orders = [], isLoading } = useOrders();
@@ -62,6 +77,16 @@ function OrdersPage() {
 
     if (statusFilter !== "ALL") {
       filtered = filtered.filter((o: Order) => o.status === statusFilter);
+    }
+
+    if (paymentStatusFilter === 'paid') {
+      filtered = filtered.filter((o: Order) => o.isPaid);
+    } else if (paymentStatusFilter === 'unpaid') {
+      filtered = filtered.filter((o: Order) => !o.isPaid);
+    }
+
+    if (paymentMethodFilter !== 'ALL') {
+      filtered = filtered.filter((o: Order) => o.paymentMethod === paymentMethodFilter);
     }
 
     if (search) {
@@ -75,7 +100,7 @@ function OrdersPage() {
     }
 
     return filtered;
-  }, [orders, search, statusFilter]);
+  }, [orders, search, statusFilter, paymentStatusFilter, paymentMethodFilter]);
 
   const paginatedOrders = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -104,8 +129,8 @@ function OrdersPage() {
           className="animate-fade-in"
           style={{ animationFillMode: "forwards" }}
         >
-          <CardHeader className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col gap-4 sm:items-center">
+          <CardHeader className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative w-full max-w-sm">
                 <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -118,6 +143,20 @@ function OrdersPage() {
                   className="pl-9"
                 />
               </div>
+              <Button asChild className="gap-2">
+                <Link to="/orders/new">
+                  <Plus className="h-4 w-4" />
+                  Novo Pedido
+                </Link>
+              </Button>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium">Filtros</span>
+              </div>
+              
               <div className="flex flex-wrap gap-2">
                 {statusFilters.map((filter) => (
                   <Button
@@ -135,13 +174,41 @@ function OrdersPage() {
                   </Button>
                 ))}
               </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Select value={paymentStatusFilter} onValueChange={(value: any) => {
+                  setPaymentStatusFilter(value);
+                  setCurrentPage(1);
+                }}>
+                  <SelectTrigger className="w-[180px]">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos pagamentos</SelectItem>
+                    <SelectItem value="paid">Pagos</SelectItem>
+                    <SelectItem value="unpaid">Não pagos</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={paymentMethodFilter} onValueChange={(value: any) => {
+                  setPaymentMethodFilter(value);
+                  setCurrentPage(1);
+                }}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Forma de pagamento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ALL">Todas as formas</SelectItem>
+                    {PAYMENT_METHOD_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <Button asChild className="gap-2">
-              <Link to="/orders/new">
-                <Plus className="h-4 w-4" />
-                Novo Pedido
-              </Link>
-            </Button>
           </CardHeader>
 
           <CardContent>
@@ -159,6 +226,7 @@ function OrdersPage() {
                         <TableHead className="w-[200px]">Cliente</TableHead>
                         <TableHead className="w-[100px]">Itens</TableHead>
                         <TableHead className="w-[120px]">Total</TableHead>
+                        <TableHead className="w-[100px]">Pagamento</TableHead>
                         <TableHead className="w-[120px]">Status</TableHead>
                         <TableHead className="w-[100px]">Entrega</TableHead>
                         <TableHead className="w-[100px]">Data</TableHead>
@@ -209,6 +277,23 @@ function OrdersPage() {
                             <span className="font-semibold text-emerald-600 dark:text-emerald-400">
                               {formatCurrency(order.total)}
                             </span>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-1">
+                              <Badge variant={order.isPaid ? "default" : "secondary"} className={cn(
+                                "text-xs",
+                                order.isPaid 
+                                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                  : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                              )}>
+                                {order.isPaid ? 'Pago' : 'Não Pago'}
+                              </Badge>
+                              {order.paymentMethod && (
+                                <span className="text-muted-foreground text-xs">
+                                  {paymentMethodLabels[order.paymentMethod]}
+                                </span>
+                              )}
+                            </div>
                           </TableCell>
                           <TableCell>
                             <span

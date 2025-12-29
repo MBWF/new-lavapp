@@ -19,6 +19,7 @@ export type OrderStatus =
   | "DELIVERED"
   | "CANCELLED";
 export type DeliveryType = "PICKUP" | "DELIVERY";
+export type PaymentMethod = "CASH" | "CREDIT_CARD" | "DEBIT_CARD" | "PIX";
 
 export interface OrderItem {
   id: string;
@@ -51,6 +52,8 @@ export interface Order {
   deliveryAddress?: string;
   notes?: string;
   specialInstructions?: string;
+  paymentMethod?: PaymentMethod;
+  isPaid: boolean;
   history: OrderHistory[];
   createdAt: Date;
   updatedAt: Date;
@@ -72,6 +75,8 @@ export interface CreateOrderInput {
   deliveryAddress?: string;
   notes?: string;
   specialInstructions?: string;
+  paymentMethod?: PaymentMethod;
+  isPaid?: boolean;
 }
 
 export interface UpdateOrderInput {
@@ -90,6 +95,8 @@ export interface UpdateOrderInput {
   deliveryAddress?: string;
   notes?: string;
   specialInstructions?: string;
+  paymentMethod?: PaymentMethod;
+  isPaid?: boolean;
 }
 
 const formatDateToISO = (date: Date): string => {
@@ -132,6 +139,8 @@ const parseOrder = async (
     deliveryAddress: orderRow.delivery_address ?? undefined,
     notes: orderRow.notes ?? undefined,
     specialInstructions: orderRow.special_instructions ?? undefined,
+    paymentMethod: orderRow.payment_method ? (orderRow.payment_method as PaymentMethod) : undefined,
+    isPaid: orderRow.is_paid,
     history: historyRows.map((h) => ({
       id: h.id,
       action: h.action,
@@ -256,6 +265,8 @@ export const ordersQueries = {
       delivery_address: input.deliveryAddress,
       notes: input.notes,
       special_instructions: input.specialInstructions,
+      payment_method: input.paymentMethod,
+      is_paid: input.isPaid ?? false,
     };
 
     const { data: orderData, error: orderError } = await supabase
@@ -308,6 +319,14 @@ export const ordersQueries = {
       });
     }
 
+    if (input.isPaid !== undefined && input.isPaid !== existingOrder.isPaid) {
+      historyEntries.push({
+        order_id: input.id,
+        action: "PAYMENT_STATUS_CHANGED",
+        description: input.isPaid ? "Pagamento recebido" : "Pagamento marcado como não recebido",
+      });
+    }
+
     if (input.items) {
       await supabase.from("order_items").delete().eq("order_id", input.id);
 
@@ -353,6 +372,10 @@ export const ordersQueries = {
     if (input.notes !== undefined) updateData.notes = input.notes;
     if (input.specialInstructions !== undefined)
       updateData.special_instructions = input.specialInstructions;
+    if (input.paymentMethod !== undefined)
+      updateData.payment_method = input.paymentMethod;
+    if (input.isPaid !== undefined)
+      updateData.is_paid = input.isPaid;
 
     if (input.items) {
       updateData.total = input.items.reduce(

@@ -25,7 +25,11 @@ export function useCalendarEvents(
       ) {
         return false;
       }
-      if (filters.customerId && order.customer?.id !== filters.customerId) {
+      if (
+        filters.customerId &&
+        filters.customerId !== 'all' &&
+        order.customer?.id !== filters.customerId
+      ) {
         return false;
       }
       return true;

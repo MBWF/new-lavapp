@@ -49,6 +49,8 @@ export const createOrderSchema = z.object({
   deliveryAddress: z.string().optional(),
   notes: z.string().optional(),
   specialInstructions: z.string().optional(),
+  paymentMethod: z.enum(['CASH', 'CREDIT_CARD', 'DEBIT_CARD', 'PIX']).optional(),
+  isPaid: z.boolean().optional(),
 });
 
 export type OrderItemFormData = z.infer<typeof orderItemSchema>;

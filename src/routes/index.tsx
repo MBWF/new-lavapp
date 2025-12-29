@@ -7,8 +7,11 @@ import {
   Loader2,
   ShoppingBag,
   Users,
+  TrendingUp,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -17,12 +20,26 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Line,
+  LineChart,
+  Legend,
 } from "recharts";
 import { Header } from "@/components/layout/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCustomers } from "@/hooks/use-customers";
 import { useOrders } from "@/hooks/use-orders";
+import { useFinancialSummary, useRevenueByPeriod, type PeriodType } from "@/hooks/use-financial-reports";
 import { cn, formatCurrency, formatPhone } from "@/lib/utils";
+import { paymentMethodLabels } from "@/types/order";
 
 export const Route = createFileRoute("/")({
   component: DashboardPage,
@@ -86,6 +103,35 @@ function DashboardPage() {
   const { data: customers = [] } = useCustomers();
   const { data: orders = [], isLoading: isLoadingOrders } = useOrders();
   const recentCustomers = customers.slice(0, 5);
+  
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodType>('day');
+  const [financialPeriod, setFinancialPeriod] = useState<'today' | 'week' | 'month' | 'year'>('month');
+  
+  const getFinancialDateRange = () => {
+    const now = new Date();
+    const start = new Date();
+    
+    switch (financialPeriod) {
+      case 'today':
+        start.setHours(0, 0, 0, 0);
+        break;
+      case 'week':
+        start.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        start.setMonth(now.getMonth() - 1);
+        break;
+      case 'year':
+        start.setFullYear(now.getFullYear() - 1);
+        break;
+    }
+    
+    return { start, end: now };
+  };
+  
+  const { start: financialStart, end: financialEnd } = getFinancialDateRange();
+  const { data: financialSummary, isLoading: isLoadingFinancial } = useFinancialSummary(financialStart, financialEnd);
+  const { data: revenueData } = useRevenueByPeriod(selectedPeriod);
 
   const stats = useMemo(() => {
     const today = new Date();
@@ -225,6 +271,13 @@ function DashboardPage() {
     );
   }
 
+  const financialPeriodLabels = {
+    today: 'Hoje',
+    week: 'Últimos 7 dias',
+    month: 'Último mês',
+    year: 'Último ano',
+  };
+
   return (
     <div className="flex h-full flex-col">
       <Header title="Dashboard" description="Visão geral do seu negócio" />
@@ -265,68 +318,126 @@ function DashboardPage() {
           />
         </div>
 
+        <Card className="stagger-5 animate-fade-in opacity-0" style={{ animationFillMode: "forwards" }}>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="font-semibold text-base">Relatório Financeiro</CardTitle>
+              <p className="text-muted-foreground text-sm">{financialPeriodLabels[financialPeriod]}</p>
+            </div>
+            <Select value={financialPeriod} onValueChange={(value) => setFinancialPeriod(value as any)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="today">Hoje</SelectItem>
+                <SelectItem value="week">Últimos 7 dias</SelectItem>
+                <SelectItem value="month">Último mês</SelectItem>
+                <SelectItem value="year">Último ano</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardHeader>
+          <CardContent>
+            {isLoadingFinancial ? (
+              <div className="flex h-[200px] items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">Receita Total</p>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <p className="mt-2 font-bold text-2xl">{formatCurrency(financialSummary.totalRevenue)}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{financialSummary.totalOrders} pedidos</p>
+                </div>
+
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">Receita Recebida</p>
+                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  </div>
+                  <p className="mt-2 font-bold text-2xl text-green-600">{formatCurrency(financialSummary.paidRevenue)}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{Math.round(financialSummary.paymentRate)}% pago</p>
+                </div>
+
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">A Receber</p>
+                    <XCircle className="h-4 w-4 text-yellow-500" />
+                  </div>
+                  <p className="mt-2 font-bold text-2xl text-yellow-600">{formatCurrency(financialSummary.unpaidRevenue)}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Pendente</p>
+                </div>
+
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">Taxa de Pagamento</p>
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <p className="mt-2 font-bold text-2xl">{Math.round(financialSummary.paymentRate)}%</p>
+                  <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+                    <div 
+                      className="h-full bg-primary transition-all" 
+                      style={{ width: `${financialSummary.paymentRate}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-6 space-y-3">
+              <p className="font-medium text-sm">Por forma de pagamento</p>
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {Object.entries(financialSummary.byPaymentMethod).map(([method, data]) => (
+                  <div key={method} className="flex items-center justify-between rounded-lg bg-muted/50 p-3">
+                    <div>
+                      <p className="text-sm font-medium">{paymentMethodLabels[method as keyof typeof paymentMethodLabels]}</p>
+                      <p className="text-xs text-muted-foreground">{data.count} pedidos</p>
+                    </div>
+                    <p className="font-semibold text-sm">{formatCurrency(data.total)}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid gap-6 lg:grid-cols-7">
           <Card
-            className="stagger-5 animate-fade-in opacity-0 lg:col-span-4"
+            className="stagger-6 animate-fade-in opacity-0 lg:col-span-4"
             style={{ animationFillMode: "forwards" }}
           >
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="font-semibold text-base">
-                  Pedidos da Semana
+                  Receita por Período
                 </CardTitle>
-                <p className="text-muted-foreground text-sm">Últimos 7 dias</p>
+                <p className="text-muted-foreground text-sm">Total vs Recebida</p>
               </div>
-              {weekTrend !== 0 && (
-                <div
-                  className={cn(
-                    "flex items-center gap-1 rounded-lg px-2 py-1 font-medium text-xs",
-                    weekTrend >= 0
-                      ? "bg-green-500/10 text-green-600 dark:text-green-400"
-                      : "bg-red-500/10 text-red-600 dark:text-red-400"
-                  )}
-                >
-                  {weekTrend >= 0 ? (
-                    <ArrowUpRight className="h-3 w-3" />
-                  ) : (
-                    <ArrowDownRight className="h-3 w-3" />
-                  )}
-                  {weekTrend >= 0 ? "+" : ""}
-                  {weekTrend}%
-                </div>
-              )}
+              <Select value={selectedPeriod} onValueChange={(value) => setSelectedPeriod(value as PeriodType)}>
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="day">Por dia</SelectItem>
+                  <SelectItem value="week">Por semana</SelectItem>
+                  <SelectItem value="month">Por mês</SelectItem>
+                  <SelectItem value="year">Por ano</SelectItem>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent>
               <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient
-                        id="colorPedidos"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="hsl(var(--primary))"
-                          stopOpacity={0.3}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="hsl(var(--primary))"
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                    </defs>
+                  <LineChart data={revenueData}>
                     <CartesianGrid
                       strokeDasharray="3 3"
                       className="stroke-muted"
                       vertical={false}
                     />
                     <XAxis
-                      dataKey="name"
+                      dataKey="label"
                       axisLine={false}
                       tickLine={false}
                       className="fill-muted-foreground text-xs"
@@ -335,6 +446,7 @@ function DashboardPage() {
                       axisLine={false}
                       tickLine={false}
                       className="fill-muted-foreground text-xs"
+                      tickFormatter={(value) => `R$ ${value}`}
                     />
                     <Tooltip
                       contentStyle={{
@@ -344,16 +456,26 @@ function DashboardPage() {
                         boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                       }}
                       labelStyle={{ color: "hsl(var(--foreground))" }}
+                      formatter={(value: number) => formatCurrency(value)}
                     />
-                    <Area
+                    <Legend />
+                    <Line
                       type="monotone"
-                      dataKey="pedidos"
+                      dataKey="totalRevenue"
+                      name="Receita Total"
                       stroke="hsl(var(--primary))"
                       strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorPedidos)"
+                      dot={{ fill: "hsl(var(--primary))" }}
                     />
-                  </AreaChart>
+                    <Line
+                      type="monotone"
+                      dataKey="paidRevenue"
+                      name="Receita Recebida"
+                      stroke="hsl(142.1 76.2% 36.3%)"
+                      strokeWidth={2}
+                      dot={{ fill: "hsl(142.1 76.2% 36.3%)" }}
+                    />
+                  </LineChart>
                 </ResponsiveContainer>
               </div>
             </CardContent>

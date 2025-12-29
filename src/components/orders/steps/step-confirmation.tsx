@@ -1,7 +1,15 @@
-import { useOrderWizard } from '../order-wizard-context';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { useOrderWizard } from "../order-wizard-context";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   User,
   UserX,
@@ -12,19 +20,26 @@ import {
   Store,
   Truck,
   Pencil,
-} from 'lucide-react';
-import { formatCurrency, formatPhone } from '@/lib/utils';
-import { deliveryTypeLabels } from '@/types/order';
+  CreditCard,
+  Wallet,
+} from "lucide-react";
+import { formatCurrency, formatPhone } from "@/lib/utils";
+import {
+  deliveryTypeLabels,
+  PAYMENT_METHOD_OPTIONS,
+  paymentMethodLabels,
+  type PaymentMethod,
+} from "@/types/order";
 
 export function StepConfirmation() {
-  const { data, setCurrentStep, getTotal } = useOrderWizard();
+  const { data, setCurrentStep, getTotal, setDeliveryInfo } = useOrderWizard();
 
   const formatDate = (date: Date | null): string => {
-    if (!date) return '-';
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
+    if (!date) return "-";
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     }).format(date);
   };
 
@@ -75,9 +90,9 @@ export function StepConfirmation() {
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 text-sm font-semibold text-primary">
                   {data.customer.name
-                    .split(' ')
+                    .split(" ")
                     .map((n) => n[0])
-                    .join('')
+                    .join("")
                     .slice(0, 2)
                     .toUpperCase()}
                 </div>
@@ -95,7 +110,7 @@ export function StepConfirmation() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              {data.deliveryType === 'PICKUP' ? (
+              {data.deliveryType === "PICKUP" ? (
                 <Store className="h-5 w-5" />
               ) : (
                 <Truck className="h-5 w-5" />
@@ -123,17 +138,17 @@ export function StepConfirmation() {
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Coleta:</span>
                 <span>
-                  {formatDate(data.pickupDate)} às {data.pickupTime || '-'}
+                  {formatDate(data.pickupDate)} às {data.pickupTime || "-"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Entrega:</span>
                 <span>
-                  {formatDate(data.deliveryDate)} às {data.deliveryTime || '-'}
+                  {formatDate(data.deliveryDate)} às {data.deliveryTime || "-"}
                 </span>
               </div>
-              {data.deliveryType === 'DELIVERY' && data.deliveryAddress && (
+              {data.deliveryType === "DELIVERY" && data.deliveryAddress && (
                 <div className="flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 text-muted-foreground" />
                   <span>{data.deliveryAddress}</span>
@@ -233,6 +248,94 @@ export function StepConfirmation() {
           </CardContent>
         </Card>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Wallet className="h-5 w-5" />
+            Pagamento
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="payment-method">Forma de Pagamento *</Label>
+            <Select
+              value={data.paymentMethod || ""}
+              onValueChange={(value) =>
+                setDeliveryInfo({ paymentMethod: value as PaymentMethod })
+              }
+            >
+              <SelectTrigger id="payment-method">
+                <SelectValue placeholder="Selecione a forma de pagamento" />
+              </SelectTrigger>
+              <SelectContent>
+                {PAYMENT_METHOD_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-lg border p-4">
+            <button
+              type="button"
+              onClick={() => setDeliveryInfo({ isPaid: !data.isPaid })}
+              className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${
+                data.isPaid
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground"
+              }`}
+            >
+              <CreditCard className="h-5 w-5" />
+            </button>
+            <div className="flex-1">
+              <p className="font-medium">
+                {data.isPaid ? "Pagamento Recebido" : "Pagamento Pendente"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {data.isPaid
+                  ? "O pagamento já foi realizado"
+                  : "Aguardando pagamento do cliente"}
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant={data.isPaid ? "secondary" : "default"}
+              size="sm"
+              onClick={() => setDeliveryInfo({ isPaid: !data.isPaid })}
+            >
+              {data.isPaid ? "Marcar como Não Pago" : "Marcar como Pago"}
+            </Button>
+          </div>
+
+          {data.paymentMethod && (
+            <div className="rounded-lg bg-muted/50 p-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">
+                  Forma de pagamento:
+                </span>
+                <span className="font-medium">
+                  {paymentMethodLabels[data.paymentMethod]}
+                </span>
+              </div>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Status:</span>
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                    data.isPaid
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                  }`}
+                >
+                  {data.isPaid ? "Pago" : "Não Pago"}
+                </span>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

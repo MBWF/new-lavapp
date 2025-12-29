@@ -1,6 +1,6 @@
 import { createContext, type ReactNode, useContext, useState } from 'react';
 import type { Customer } from '@/types/customer';
-import type { DeliveryType } from '@/types/order';
+import type { DeliveryType, PaymentMethod } from '@/types/order';
 import type { Piece } from '@/types/piece';
 
 export interface OrderItemDraft {
@@ -21,6 +21,8 @@ export interface OrderWizardData {
   deliveryAddress: string;
   notes: string;
   specialInstructions: string;
+  paymentMethod: PaymentMethod | null;
+  isPaid: boolean;
 }
 
 interface OrderWizardContextType {
@@ -49,6 +51,8 @@ const initialData: OrderWizardData = {
   deliveryAddress: '',
   notes: '',
   specialInstructions: '',
+  paymentMethod: null,
+  isPaid: false,
 };
 
 const OrderWizardContext = createContext<OrderWizardContextType | null>(null);
@@ -134,7 +138,7 @@ export function OrderWizardProvider({ children }: { children: ReactNode }) {
           (data.deliveryType === 'PICKUP' || data.deliveryAddress.trim() !== '')
         );
       case 4:
-        return true;
+        return data.paymentMethod !== null;
       default:
         return false;
     }

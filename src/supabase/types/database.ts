@@ -133,7 +133,9 @@ export type Database = {
           delivery_type: string;
           id: string;
           is_anonymous: boolean;
+          is_paid: boolean;
           notes: string | null;
+          payment_method: string | null;
           pickup_date: string;
           pickup_time: string;
           special_instructions: string | null;
@@ -151,7 +153,9 @@ export type Database = {
           delivery_type: string;
           id?: string;
           is_anonymous?: boolean;
+          is_paid?: boolean;
           notes?: string | null;
+          payment_method?: string | null;
           pickup_date: string;
           pickup_time: string;
           special_instructions?: string | null;
@@ -169,7 +173,9 @@ export type Database = {
           delivery_type?: string;
           id?: string;
           is_anonymous?: boolean;
+          is_paid?: boolean;
           notes?: string | null;
+          payment_method?: string | null;
           pickup_date?: string;
           pickup_time?: string;
           special_instructions?: string | null;
